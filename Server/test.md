@@ -1,0 +1,33 @@
+### GET FRIENDs
+GET http://localhost:4000/friends
+
+### GET FRIEND
+GET http://localhost:4000/friends/james
+
+
+### ADD A FRIEND
+POST http://localhost:4000/addfriend
+Content-Type: application/json
+
+{
+    "name": "banana",
+    "status": "frieind"
+}
+
+### UPDATE STATUS OF A FRIEND
+PATCH http://localhost:4000/changestatus
+Content-Type: application/json
+
+{
+    "name": "tomato",
+    "newStatus": "friend"
+}
+
+
+###DELETE A FRIEND
+DELETE http://localhost:4000/friends
+Content-Type: application/json
+
+{
+    "name": "banana"
+}
