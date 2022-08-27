@@ -14,8 +14,6 @@ const MainProducts = () => {
     )
 }
 
-
-
 export default MainProducts
 
       
