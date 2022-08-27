@@ -6,36 +6,29 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import NavBar from './components/NavBar';
 import Home from './components/Home';
-
+//login pages
 import { SignInPage } from './components/shared/SignInPage';
 import { SignUpPage } from './components/shared/SignUpPage';
-import Products from './components/products/Products';
-import NewProduct from './components/products/NewProduct';
 
-const ParentComponent = ({ children }) => {
-  return (
-    <div>
-      <h1>I am parent</h1>
-      {children}
-    </div>
-  )
-}
+//ProductPage
+import MainProducts from './components/products/Products';
+import NewProduct from './components/products/NewProduct';
+import  ShowProduct  from './components/products/ShowProduct';
+import  IndexProduct  from './components/products/IndexProduct';
+import  EditProduct  from './components/products/ShowProduct';
+import  DeleteProduct  from './components/products/IndexProduct';
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null)
 
   useEffect(() => {
-    // todo replace with getCurrentUser
-    setCurrentUser(undefined)
+    getCurrentUser()
   }, [])
   const getCurrentUser = () => {
     return User.current().then(user => {
       console.log("---App.js---start USEREFFECT")
       console.log(user.data)
-      !!user.data ? setCurrentUser(user) : setCurrentUser(undefined)
-      console.log(user.data)
-      console.log("---App.js---start USEREFFECT")
-      console.log(user.data.email)
+      !!user.data ? setCurrentUser(user.data.email) : setCurrentUser(undefined)
       console.log("---App.js---END USEREFFECT")
     }).catch(e =>
       console.log(e))
@@ -45,11 +38,16 @@ function App() {
     <BrowserRouter>
       <NavBar currentUser={currentUser} onSignOut={onSignOut} />
       <Routes>
-        <Route index element={<Home />} />
+        <Route  index element={<Home />} />
         <Route path="signin" element={<SignInPage onSignIn={getCurrentUser} />} />
         <Route path="signup" element={<SignUpPage onSignUp={getCurrentUser} />} />
-        <Route path="products" element={<Products />}>
+        <Route path="products" element={<MainProducts />}>
+          <Route path="index" element={<IndexProduct />} />
           <Route path="new" element={<NewProduct />} />
+          <Route path=":id" element={<ShowProduct />} >
+              <Route path=":edit" element={<EditProduct />} />
+              <Route path=":delete" element={<DeleteProduct />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
