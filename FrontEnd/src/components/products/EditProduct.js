@@ -35,7 +35,7 @@ const ShowProduct = () => {
         Products.edit(newProductData)
             .then(response => {
                 console.log(response);
-                navigate("/")
+              
         })
     }
   
@@ -46,7 +46,7 @@ const ShowProduct = () => {
             {
             isLoading? (
             <>
-                <h3>ProductList is loading </h3>
+                <h3>EDit is loading </h3>
             </>):(
                 <div>
                 <form id="newProductForm" onSubmit={handleSubmit}>

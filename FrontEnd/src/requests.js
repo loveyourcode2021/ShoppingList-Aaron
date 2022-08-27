@@ -34,9 +34,18 @@ export const User = {
     },
 }
 
-export const products = {
+export const Products = {
     index() {
-        return fetch(`${baseURL}/products/`).then(res => res.json());
+        return fetch(`${baseURL}/products`,{
+            method: "GET",
+            credentials: "include"
+        }).then(res => res.json());
+    },
+    show(id){
+        return fetch(`${baseURL}/products/${id}`,{
+            method: "GET",
+            credentials: 'include'
+        }).then(res => res.json())
     },
     create(params) {
         return fetch(`${baseURL}/products/new`, {
@@ -46,6 +55,26 @@ export const products = {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(params)
+        }).then(res => res.json());
+    },
+  
+    edit(params,id) {
+        return fetch(`${baseURL}/products/${id}`, {
+            method: 'PATCH',
+            credentials: 'include', 
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(params)
+        }).then(res => res.json());
+    },
+    destory(id) {
+        return fetch(`${baseURL}/products/${id}`, {
+            method: 'DESTROY',
+            credentials: 'include', //need for cookies to be allowed to be sent cross-origin
+            headers: {
+                'Content-Type': 'application/json'
+            },
         }).then(res => res.json());
     }
 

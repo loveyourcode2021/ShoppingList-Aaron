@@ -1,5 +1,5 @@
 import express from 'express';
-import { addDoc, collection, doc, deleteDoc, where, query, getDoc, getDocs, onSnapshot, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, doc, deleteDoc, where, query, getDoc, getDocs,  updateDoc, onSnapshot, serverTimestamp, collectionGroup } from 'firebase/firestore';
 import { collections, db } from '../firebase.js';
 
 const router = express.Router();
@@ -19,51 +19,115 @@ product_reviews
 
 router.get('/', async (req, res) => {
 
-    const docSnap = await getDoc(collection(db, collection.PRODUCTS));
-    const products = []
-    onSnapshot(docSnap, (snapshop) => {
-        snapshot.docs.forEach(doc => {
-            products.push({ ...doc.data(), id: doc.id })
-        })
-    })
-    if (products.length > 0) {
-        res.status(200).send(products)
-    } else {
-        return res.sendStatus(400)
-    }
 
+    const productsList = []
+    const productSnapShot = await getDocs(collection(db, collections.PRODUCTS))
+    productSnapShot?.forEach(async (docs) => {
+       productsList.push(docs.data())
+    })
+  
+    res.json(productsList)
 })
 
 
+//needs to upgrade!!
 router.post('/new', async (req, res) => {
-    const { product_id, name, price, product_img, description } = req.body;
+
+
+    // const { product_id, product_name, product_description, product_price, product_media_url, 
+    //         product_files} = req.body;
+    // const newProduct = {
+    //     product_id,
+    //     product_name,
+    //     product_description,
+    //     product_price,
+    //     product_price,
+    //     product_media_url,
+    //     createdAt: new Date() 
+    // }
+    const {  product_id,
+        name,
+        description,
+        price,
+        image,} = req.body;
 
     const newProduct = {
         product_id,
         name,
-        price,
-        product_img,
         description,
-        createdAt: serverTimestamp()
+        price,
+        image,
+        createdAt: new Date() 
     }
+    console.log("got the file",newProduct)
+    console.log("got the file",req.body  )
+    console.log("got the file",req.params  )
+    // const file_name = product_id+"-"+product_media_url.name
+    // const data= {
+    //     file_name: product_files
+    // }
     try {
+   
         const newProductRef = await addDoc(collection(db, collections.PRODUCTS), newProduct)
+       
         const responseJson = { ...newProductRef, id: newProductRef.id }
-        console.log(responseJson);
+        // const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
+        // uploadBytes(imageRef, imageUpload).then((snapshot) => {
+        //   getDownloadURL(snapshot.ref).then((url) => {
+        //     setImageUrls((prev) => [...prev, url]);
+        //   });
+        // });
         res.send(responseJson);
     } catch (error) {
         console.log(`Error: ${error}`);
     }
 })
-// not sure this will work out
-router.patch('/:id', async (req, res) => {
+
+//hook up specific one item and display
+router.get('/:id', async (req, res) => {
     const id = req.params.id;
-    // delete req.body.id;
-    const data = req.body;
-    const updated_record = await db.collection('products').doc(id).update(data);
-    res.status(200).send(updated_record);
+    const q = query(collection(db, collections.PRODUCTS), where("product_id", "==", id));
+    let foundData = ""
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        foundData = doc.data()
+       
+    });
+    !!foundData ?res.send(foundData): res.status(400).send("not found")
+  
+
 })
 
+//edit middle ware
+router.patch('/:id', async (req, res) => {
+    const id = req.params.id;
+    const data = req.body;
+    // const { product_id, name, price, product_img, description } = req.body;
+    const {  product_id,
+        name,
+        description,
+        price,
+        image,} = req.body;
+
+   const newProduct = {
+            product_id,
+            name,
+            description,
+            price,
+            image,
+            createdAt: new Date() 
+    }
+
+    const productDoc = collection(db, collections.PRODUCTS, id)
+   
+    const result = await updateDoc(productDoc, newProduct).then( res => {
+        res.status(200).send(res);
+    }).catch(e => {
+        res.status(403).send(e);
+        
+    });   
+})
 router.post('/delete', async (req, res) => {
     // the actual name or id of the document we want to delete, is a bunch of random letters and numbers that we dont know
     // but we do know the product id

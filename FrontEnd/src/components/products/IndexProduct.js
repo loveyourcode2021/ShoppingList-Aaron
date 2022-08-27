@@ -22,7 +22,7 @@ const IndexProduct = () => {
          {
          isLoading? (
          <>
-             <h3>ProductList is loading </h3>
+             <h3>ProductList is loading</h3>
          </>):(
             <div>
                  {
