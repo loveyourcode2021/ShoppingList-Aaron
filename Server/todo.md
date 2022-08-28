@@ -25,3 +25,13 @@ Objective: User wants to purchase a product
 3. User will checkout
    1. create an order
       - user_id
+
+Aug 27th TODO / Notes
+- Drag and Drop w/ any file, filter out for only image/video
+  - upload image to firebase store
+    - how to link image data together with the product table? 
+  - display related images? 
+- Product page not displaying properly 
+- edit page & delete, route not working
+- ecommerce first plan, now analyzing product, make up video/photo, order from amazon, make analysis, and leave comment based on analysis 
+- add admin panel, user panel to see item selected

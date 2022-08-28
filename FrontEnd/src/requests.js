@@ -36,13 +36,13 @@ export const User = {
 
 export const Products = {
     index() {
-        return fetch(`${baseURL}/products`,{
+        return fetch(`${baseURL}/products`, {
             method: "GET",
             credentials: "include"
         }).then(res => res.json());
     },
-    show(id){
-        return fetch(`${baseURL}/products/${id}`,{
+    show(id) {
+        return fetch(`${baseURL}/products/${id}`, {
             method: "GET",
             credentials: 'include'
         }).then(res => res.json())
@@ -52,16 +52,16 @@ export const Products = {
             method: 'POST',
             credentials: 'include', //need for cookies to be allowed to be sent cross-origin
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': "application/x-www-form-urlencoded"
             },
-            body: JSON.stringify(params)
+            body: params
         }).then(res => res.json());
     },
-  
-    edit(params,id) {
+
+    edit(params, id) {
         return fetch(`${baseURL}/products/${id}`, {
             method: 'PATCH',
-            credentials: 'include', 
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },

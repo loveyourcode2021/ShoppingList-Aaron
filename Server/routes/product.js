@@ -1,5 +1,5 @@
 import express from 'express';
-import { addDoc, collection, doc, deleteDoc, where, query, getDoc, getDocs,  updateDoc, onSnapshot, serverTimestamp, collectionGroup } from 'firebase/firestore';
+import { addDoc, collection, doc, deleteDoc, where, query, getDoc, getDocs, updateDoc, onSnapshot, serverTimestamp, collectionGroup } from 'firebase/firestore';
 import { collections, db } from '../firebase.js';
 
 const router = express.Router();
@@ -23,9 +23,9 @@ router.get('/', async (req, res) => {
     const productsList = []
     const productSnapShot = await getDocs(collection(db, collections.PRODUCTS))
     productSnapShot?.forEach(async (docs) => {
-       productsList.push(docs.data())
+        productsList.push(docs.data())
     })
-  
+
     res.json(productsList)
 })
 
@@ -45,31 +45,34 @@ router.post('/new', async (req, res) => {
     //     product_media_url,
     //     createdAt: new Date() 
     // }
-    const {  product_id,
+    const {
+        product_id,
         name,
         description,
         price,
-        image,} = req.body;
+        imageUrl,
+        mediaFile
+    } = req.body;
 
     const newProduct = {
         product_id,
         name,
         description,
         price,
-        image,
-        createdAt: new Date() 
+        imageUrl,
+        createdAt: new Date()
     }
-    console.log("got the file",newProduct)
-    console.log("got the file",req.body  )
-    console.log("got the file",req.params  )
+    console.log("got the file", newProduct)
+    console.log("got the file", req.body)
+    console.log("got the file", req.params)
     // const file_name = product_id+"-"+product_media_url.name
     // const data= {
     //     file_name: product_files
     // }
     try {
-   
+
         const newProductRef = await addDoc(collection(db, collections.PRODUCTS), newProduct)
-       
+
         const responseJson = { ...newProductRef, id: newProductRef.id }
         // const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
         // uploadBytes(imageRef, imageUpload).then((snapshot) => {
@@ -92,10 +95,10 @@ router.get('/:id', async (req, res) => {
     querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
         foundData = doc.data()
-       
+
     });
-    !!foundData ?res.send(foundData): res.status(400).send("not found")
-  
+    !!foundData ? res.send(foundData) : res.status(400).send("not found")
+
 
 })
 
@@ -104,29 +107,29 @@ router.patch('/:id', async (req, res) => {
     const id = req.params.id;
     const data = req.body;
     // const { product_id, name, price, product_img, description } = req.body;
-    const {  product_id,
+    const { product_id,
         name,
         description,
         price,
-        image,} = req.body;
+        image, } = req.body;
 
-   const newProduct = {
-            product_id,
-            name,
-            description,
-            price,
-            image,
-            createdAt: new Date() 
+    const newProduct = {
+        product_id,
+        name,
+        description,
+        price,
+        image,
+        createdAt: new Date()
     }
 
     const productDoc = collection(db, collections.PRODUCTS, id)
-   
-    const result = await updateDoc(productDoc, newProduct).then( res => {
+
+    const result = await updateDoc(productDoc, newProduct).then(res => {
         res.status(200).send(res);
     }).catch(e => {
         res.status(403).send(e);
-        
-    });   
+
+    });
 })
 router.post('/delete', async (req, res) => {
     // the actual name or id of the document we want to delete, is a bunch of random letters and numbers that we dont know
