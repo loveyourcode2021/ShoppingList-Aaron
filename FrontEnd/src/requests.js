@@ -36,7 +36,7 @@ export const User = {
 
 export const Products = {
     index() {
-        return fetch(`${baseURL}/products`,{
+        return fetch(`${baseURL}/products/index`,{
             method: "GET",
             credentials: "include"
         }).then(res => res.json());
