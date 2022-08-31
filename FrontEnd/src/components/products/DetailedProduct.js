@@ -1,5 +1,5 @@
 import React from "react"
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 
 const DetailedProduct = ({product}) => {
@@ -12,9 +12,9 @@ const DetailedProduct = ({product}) => {
   
     return (
         <div>
-            <Link to={`/products/${product.product_id}`} >
+            <NavLink to={`/products/${product.product_id}`} >
             <h3>{product.name}</h3>
-            </Link>
+            </NavLink>
             <p>{ time}</p>
         </div>
     )

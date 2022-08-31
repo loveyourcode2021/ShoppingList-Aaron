@@ -1,0 +1,30 @@
+.reviewlist-container{     
+        animation: 10000ms ease-in-out infinite color-change;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        justify-content: space-between;
+
+}
+
+@keyframes color-change {
+    0% {
+      background-color: teal;
+    }
+    20% {
+      background-color: gold;
+    }
+    40% {
+      background-color: indianred;
+    }
+    60% {
+      background-color: violet;
+    }
+    80% {
+      background-color: green;
+    }
+    100% {
+      background-color: teal;
+    }
+  }

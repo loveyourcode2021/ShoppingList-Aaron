@@ -1,11 +1,13 @@
 import express from 'express';
 import { addDoc, collection, doc, deleteDoc, where, query, getDoc, getDocs, updateDoc, onSnapshot, serverTimestamp, collectionGroup } from 'firebase/firestore';
+
 import { collections, db,storage } from '../firebase.js';
 import {ref,uploadBytes,getDownloadURL,listAll,list,} from "firebase/storage";
 import {  uploadBytesResumable  } from "firebase/storage";
 import { Blob } from "buffer";
 import multer from "multer";
 import fs from 'fs';
+
 
 const router = express.Router();
 // TODO add db import
@@ -34,7 +36,19 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/new', async (req, res) => {
-   
+
+    // const { product_id, product_name, product_description, product_price, product_media_url, 
+    //         product_files} = req.body;
+    // const newProduct = {
+    //     product_id,
+    //     product_name,
+    //     product_description,
+    //     product_price,
+    //     product_price,
+    //     product_media_url,
+    //     createdAt: new Date() 
+    // }
+
     const {
         product_id,
         name,
@@ -51,14 +65,13 @@ router.post('/new', async (req, res) => {
         media_url,
         createdAt: new Date()
     }
-    console.log("got the file", newProduct)
+
+
 
     try {
-
         const newProductRef = await addDoc(collection(db, collections.PRODUCTS), newProduct)
-
         const responseJson = { ...newProductRef, id: newProductRef.id }
-        res.status(200).send({message:"all good!"});
+        res.status(200).send("all good!");
   
     } catch (error) {
         console.log(`Error: ${error}`);
@@ -144,58 +157,57 @@ router.get('/:id', async (req, res) => {
 })
 
 //edit middle ware
-router.patch('/:id', async (req, res) => {
-    const id = req.params.id;
+router.patch('/:id/edit', async (req, res) => {
+    
     const data = req.body;
     // const { product_id, name, price, product_img, description } = req.body;
-    const { product_id,
+    const {
+        product_id,
         name,
         description,
         price,
-        image, } = req.body;
+        media_url
+    } =  req.body
+
 
     const newProduct = {
         product_id,
         name,
         description,
         price,
-        image,
+        media_url,
         createdAt: new Date()
     }
 
-    const productDoc = collection(db, collections.PRODUCTS, id)
+    const q = query(collection(db, collections.PRODUCTS),  where("product_id", "==", req.params.id))
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach(async (doc) => {
+        
+        await updateDoc(doc.ref, newProduct).then(data => {res.send(data)})
+  
+        .catch(e => {
+            res.send(e)
+        });
 
-    const result = await updateDoc(productDoc, newProduct).then(res => {
-        res.status(200).send(res);
-    }).catch(e => {
-        res.status(403).send(e);
-
-    });
+    })
 })
-router.post('/delete', async (req, res) => {
-    // the actual name or id of the document we want to delete, is a bunch of random letters and numbers that we dont know
-    // but we do know the product id
-    // so we run a query to find products with a matching id, and then we dont need to know the random letters and numbers, it will delete the corresponding product
-    const { product_id } = req.body
-    // get a reference for the products collection
-    const productsRef = collection(db, collections.PRODUCTS)
-    // write a query statement:
-    // look inside the productsRef collection, and find all matching documents where product_id == product_id
-    const q = query(productsRef, where("product_id", "==", product_id));
-    // pass that query into the getDocs method, which returns a QuerySnapshot
-    const matchingProducts = await getDocs(q)
-    // we loop over the results in the snapshot array
-    if (matchingProducts.length > 0) {
-        matchingProducts.forEach(async (matchingProduct) => {
-            // each matchingProduct has a ref property, which is of a type DocumentReference, which is what deleteDoc requires to function
-            await deleteDoc(matchingProduct.ref)
-        })
-        res.send(`Deleted ${product_id}`)
-    } else { // we did not find a matching product
-        res.send(`Could not find matching product with product id ${product_id}`)
-    }
+
+router.post('/:id/delete', async (req, res) => {
+   
+    const  product_id  = req.params.id
+    const q = query(collection(db, collections.PRODUCTS), where("product_id", "==", product_id));
+    let foundData = ""
+  
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach(async (doc) => {
+        await deleteDoc(doc.ref)
+        .then(data => res.status(200).send(data))
+        .catch(e => {
+            res.status(403).send(e)
+        });
+     });
+});
 
 
-})
 
 export default router;

@@ -11,14 +11,14 @@ import userRouter from './routes/user.js';
 const app = express();
 
 app.use(cors({
-    origin: ['http://localhost:3000','http://192.168.1.66:3000'],
-    methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
-    credentials:true 
+    origin: ['http://localhost:3000', 'http://192.168.1.66:3000'],
+    methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
+    credentials: true
 }));
 app.use(logger("dev"))
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true, limit: '50mb', parameterLimit: 1000000 }))
 app.use(methodOverride((req, res) => {
     if (req.body && req.body._method) {
         const method = req.body._method;

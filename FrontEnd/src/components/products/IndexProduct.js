@@ -34,6 +34,8 @@ const IndexProduct = () => {
           });
     },[])
     return (
+      //if loading is true, shows loading
+      // else loads the whole data and display line between 48-52
         <div>
          {
          isLoading? (
@@ -43,7 +45,8 @@ const IndexProduct = () => {
             <div>
                  {
                      productList.map( (product, index) => {
-                        return (                             <div key={index}>
+                        return (                             
+                              <div key={index} className="card">
                                  <DetailedProduct product = {product}/>
                              </div>                         )    
                     })

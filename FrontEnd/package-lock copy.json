@@ -21,9 +21,6 @@
         "react-drag-drop-files": "^2.3.7",
         "react-router-dom": "^6.3.0",
         "react-scripts": "5.0.1",
-        "stars-rating": "^1.1.0",
-        "uniqid": "^5.4.0",
-        "uuid": "^8.3.2",
         "web-vitals": "^2.1.4"
       },
       "devDependencies": {
@@ -15983,11 +15980,6 @@
       "resolved": "https://registry.npmjs.org/stackframe/-/stackframe-1.3.4.tgz",
       "integrity": "sha512-oeVtt7eWQS+Na6F//S4kJ2K2VbRlS9D43mAlMyVpVWovy9o+jfgH8O9agzANzaiLjclA0oYzUXEM4PurhSUChw=="
     },
-    "node_modules/stars-rating": {
-      "version": "1.1.0",
-      "resolved": "https://registry.npmjs.org/stars-rating/-/stars-rating-1.1.0.tgz",
-      "integrity": "sha512-fsINHyvaDiCqf6uue19l13A7YwW1eMD6M1BsvZh5xZIKTxZb+bsCmtOa2qej1hmHltnI+D8FvMqjAp/KoeR2Sg=="
-    },
     "node_modules/statuses": {
       "version": "2.0.1",
       "resolved": "https://registry.npmjs.org/statuses/-/statuses-2.0.1.tgz",
@@ -16821,11 +16813,6 @@
       "engines": {
         "node": ">=4"
       }
-    },
-    "node_modules/uniqid": {
-      "version": "5.4.0",
-      "resolved": "https://registry.npmjs.org/uniqid/-/uniqid-5.4.0.tgz",
-      "integrity": "sha512-38JRbJ4Fj94VmnC7G/J/5n5SC7Ab46OM5iNtSstB/ko3l1b5g7ALt4qzHFgGciFkyiRNtDXtLNb+VsxtMSE77A=="
     },
     "node_modules/unique-string": {
       "version": "2.0.0",
@@ -29315,11 +29302,6 @@
       "resolved": "https://registry.npmjs.org/stackframe/-/stackframe-1.3.4.tgz",
       "integrity": "sha512-oeVtt7eWQS+Na6F//S4kJ2K2VbRlS9D43mAlMyVpVWovy9o+jfgH8O9agzANzaiLjclA0oYzUXEM4PurhSUChw=="
     },
-    "stars-rating": {
-      "version": "1.1.0",
-      "resolved": "https://registry.npmjs.org/stars-rating/-/stars-rating-1.1.0.tgz",
-      "integrity": "sha512-fsINHyvaDiCqf6uue19l13A7YwW1eMD6M1BsvZh5xZIKTxZb+bsCmtOa2qej1hmHltnI+D8FvMqjAp/KoeR2Sg=="
-    },
     "statuses": {
       "version": "2.0.1",
       "resolved": "https://registry.npmjs.org/statuses/-/statuses-2.0.1.tgz",
@@ -29923,11 +29905,6 @@
       "version": "2.0.0",
       "resolved": "https://registry.npmjs.org/unicode-property-aliases-ecmascript/-/unicode-property-aliases-ecmascript-2.0.0.tgz",
       "integrity": "sha512-5Zfuy9q/DFr4tfO7ZPeVXb1aPoeQSdeFMLpYuFebehDAhbuevLs5yxSZmIFN1tP5F9Wl4IpJrYojg85/zgyZHQ=="
-    },
-    "uniqid": {
-      "version": "5.4.0",
-      "resolved": "https://registry.npmjs.org/uniqid/-/uniqid-5.4.0.tgz",
-      "integrity": "sha512-38JRbJ4Fj94VmnC7G/J/5n5SC7Ab46OM5iNtSstB/ko3l1b5g7ALt4qzHFgGciFkyiRNtDXtLNb+VsxtMSE77A=="
     },
     "unique-string": {
       "version": "2.0.0",

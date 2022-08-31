@@ -15,9 +15,15 @@ import MainProducts from './components/products/Products';
 import NewProduct from './components/products/NewProduct';
 import  ShowProduct  from './components/products/ShowProduct';
 import  IndexProduct  from './components/products/IndexProduct';
-import  EditProduct  from './components/products/ShowProduct';
-import  DeleteProduct  from './components/products/IndexProduct';
+import  EditProduct  from './components/products/EditProduct';
+import  DeleteProduct  from './components/products/DeleteProduct';
+import SingleProduct from './components/products/SingleProduct';
 
+
+//ReviewPage
+import MainReviews from './components/Reviews/MainReviews'
+import ShowReview from './components/Reviews/ShowReview'
+import NewReview from './components/Reviews/NewReview'
 function App() {
   const [currentUser, setCurrentUser] = useState(null)
 
@@ -38,20 +44,26 @@ function App() {
     <BrowserRouter>
       <NavBar currentUser={currentUser} onSignOut={onSignOut} />
       <Routes>
-        <Route  index element={<Home />} />
+        <Route index element={<Home />} /> 
         <Route path="signin" element={<SignInPage onSignIn={getCurrentUser} />} />
         <Route path="signup" element={<SignUpPage onSignUp={getCurrentUser} />} />
         <Route path="products" element={<MainProducts />}>
-          <Route path="index" element={<IndexProduct />} />
-          <Route path="new" element={<NewProduct />} />
-          <Route path=":id" element={<ShowProduct />} >
-              <Route path=":edit" element={<EditProduct />} />
-              <Route path=":delete" element={<DeleteProduct />} />
+            <Route path="index" element={<IndexProduct />} />
+            <Route path="new" element={<NewProduct />} />
+            <Route path=":id" element={< SingleProduct/>} >
+              <Route index element={<ShowProduct />} >
+                  
+              </Route>
+              <Route path="edit" element={<EditProduct />} />
+              <Route path="delete" element={<DeleteProduct />} />
           </Route>
         </Route>
+        
       </Routes>
     </BrowserRouter>
   );
 }
 
 export default App;
+{/* <Route path="new" element={<DeleteProduct />} />
+<Route path=":rid" element={<ShowReview/>}> */}

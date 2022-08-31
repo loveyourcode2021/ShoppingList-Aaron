@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Products } from "../../requests";
 import axios from 'axios';
 import { FileUploader } from "react-drag-drop-files";
-import { useNavigate  } from "react-router-dom";
+
+import { useNavigate,useParams  } from "react-router-dom";
 import {
     ref,
     uploadBytes,
@@ -11,18 +12,22 @@ import {
     list,
   } from "firebase/storage";
   import { storage } from "../../firebase";
+
+
+
+
 const NewProduct = () => {
     const navigate = useNavigate()
     const fileTypes = ["JPEG", "JPG", "PNG", "GIF", "MOV"];
     const [file, setFile] = useState(null);
-    const [isFileLoading, setFileLoading] = useState(false);
+    const [count, setCount] = useState(0);
+    const params = useParams()
     const [imageUrls, setImageUrls] = useState([]);
     const [imageUpload, setImageUpload] = useState(null);
     const imagesListRef = ref(storage, "images/");
     const handleChange = (file) => {
         setFile(file);
         setImageUpload(file)
-        setFileLoading(false)
         console.log("file loaded")
     };
     const handleSubmit = (event) => {
@@ -30,30 +35,35 @@ const NewProduct = () => {
         event.preventDefault();
         // do cool stuff here
         const formData = new FormData(currentTarget)
+
         const newProductData = {
             product_id: formData.get('product_id'),
             name: formData.get('product_name'),
             description: formData.get("product_description"),
             price: formData.get("product_price"),
-            media_url: formData.get("product_media_url"),
+            media_url: formData.get("product_media_url")||"whatever",
         }
         console.log(newProductData)
+        const imageRef = ref(storage, `images/${file[0].name}`);
         Products.create(newProductData)
-            .then(response => {
-                console.log(response);
+            .then(async (response) => {
+                console.log("Data Response--->",response);
+                setCount(1)
+            await uploadBytes(imageRef, file[0]).then((snapshot) => {
+                getDownloadURL(snapshot.ref).then((url) => {
+                    setImageUrls((prev) => [...prev, url]);
+                });
+            });
+                
+            await navigate(`/product/${params.id}`)
+     
         })
  
  
-        const imageRef = ref(storage, `images/${file[0].name}`);
-        uploadBytes(imageRef, file[0]).then((snapshot) => {
-            getDownloadURL(snapshot.ref).then((url) => {
-                setImageUrls((prev) => [...prev, url]);
-            });
-        });
-        
-        if( imageUrls.length>0){
-            navigate("/")
-        }
+     
+       
+     
+
 
          //Case1-----Start
         // formData.append('file', file[0])
@@ -71,11 +81,33 @@ const NewProduct = () => {
         //     })
          //Case2-----ENDING
 
+        //   if(isFileLoading){
+
+
+        //     formData.append("product_files", file)
+        //     for (const value of formData.values()) {
+        //       console.log(value);
+        //     }
+
+        //     // axios
+        //     // .post("http://localhost:9900/api/v1/products/new", formData, {
+        //     //   headers: {
+        //     //     "Content-Type": "multipart/form-data",
+        //     //     withCredentials: true
+        //     //   },
+        //     // })
+        //     axios
+        //     .post("http://localhost:9900/api/v1/products/new", formData)
+        //   }
+
+
     }
 
 
     return (
+
         <>
+
         <div className="App">
 
             <div>
@@ -107,7 +139,7 @@ const NewProduct = () => {
 
 
                     <div>
-                        <h1>Hello To Drag & Drop Files</h1>
+                        <h1>Drag & Drop Files</h1>
                         <FileUploader
                             multiple={true}
                             handleChange={handleChange}
@@ -120,6 +152,11 @@ const NewProduct = () => {
                     <input type="submit" />
                 </form>
             </div>
+
+
+
+
+
 
         </div>
         </>
