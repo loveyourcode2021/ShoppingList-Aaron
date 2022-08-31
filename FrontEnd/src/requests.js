@@ -70,15 +70,15 @@ export const Products = {
     },
     create_axios(params) {
         return axios.post(`${baseURL}/products/new`, params).then(res => res.json());
-         // axios
-    //     // .post("http://localhost:9900/api/v1/products/new", formData, {
-    //     //   headers: {
-    //     //     "Content-Type": "multipart/form-data",
-    //     //     withCredentials: true
-    //     //   },
-    //     // })
-    //     axios
-    //     .post("http://localhost:9900/api/v1/products/new", formData)
+        // axios
+        //     // .post("http://localhost:9900/api/v1/products/new", formData, {
+        //     //   headers: {
+        //     //     "Content-Type": "multipart/form-data",
+        //     //     withCredentials: true
+        //     //   },
+        //     // })
+        //     axios
+        //     .post("http://localhost:9900/api/v1/products/new", formData)
     },
 
     edit(params, id) {
@@ -89,7 +89,13 @@ export const Products = {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(params)
-        }).then(res => res.json());
+        })
+            .then(res => {
+                res.json()
+            })
+            .catch(error => {
+                console.log(error)
+            });
     },
     destory(id) {
         return fetch(`${baseURL}/products/${id}/delete`, {
@@ -101,11 +107,11 @@ export const Products = {
         }).then(res => res.json());
     }
 
-} 
+}
 
 
 export const Reviews = {
-    index(id){
+    index(id) {
         return fetch(`${baseURL}/products/${id}/reviews`, {
             method: 'GET',
             credentials: 'include',
@@ -114,7 +120,7 @@ export const Reviews = {
             },
         }).then(res => res.json());
     },
-    create(params,id,rid){
+    create(params, id, rid) {
         return fetch(`${baseURL}/products/${id}/reviews`, {
             method: 'POST',
             credentials: 'include',
@@ -123,7 +129,7 @@ export const Reviews = {
             },
         }).then(res => res.json());
     },
-    edit(params,id,rid){
+    edit(params, id, rid) {
         return fetch(`${baseURL}/products/${id}/reviews/${rid}/delete`, {
             method: 'PATCH',
             credentials: 'include',
@@ -132,7 +138,7 @@ export const Reviews = {
             },
         }).then(res => res.json());
     },
-    delete(id,rid){
+    delete(id, rid) {
         return fetch(`${baseURL}/products/${id}/reviews/${rid}/delete`, {
             method: 'POST',
             credentials: 'include',

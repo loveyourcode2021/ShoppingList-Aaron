@@ -30,6 +30,7 @@ router.get('/', async (req, res) => {
     res.json(productsList)
 })
 
+
 router.post('/new', async (req, res) => {
 
     // const { product_id, product_name, product_description, product_price, product_media_url, 
@@ -178,12 +179,12 @@ router.patch('/:id/edit', async (req, res) => {
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach(async (doc) => {
 
-        await updateDoc(doc.ref, newProduct).then(data => { res.send(data) })
-
-            .catch(e => {
-                res.send(e)
-            });
-
+        try {
+            const updatedDoc = await updateDoc(doc.ref, newProduct)
+            res.send(updatedDoc)
+        } catch (error) {
+            res.send(error)
+        }
     })
 })
 

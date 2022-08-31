@@ -1,21 +1,22 @@
-import React,{useState,useEffect} from "react"
-import { navigate} from "react-router-dom";
+import React, { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom";
 import { Products } from "../../requests"
 import { useParams } from "react-router-dom";
 
 const EditProduct = () => {
-    const [productItem,setProductItem] = useState([])
+    const [productItem, setProductItem] = useState([])
     const params = useParams()
-    const [isLoading,setLoading] = useState(true)
+    const [isLoading, setLoading] = useState(true)
     const [id, setId] = useState("")
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
     const [price, setPrice] = useState("")
     const [mediaUrl, setMediaUrl] = useState("")
+    const navigate = useNavigate();
     //mount the information
 
     useEffect(() => {
-        Products.show(params.id).then(data =>{
+        Products.show(params.id).then(data => {
             console.log("ProductList ")
             console.log(data)
             setProductItem(data)
@@ -26,63 +27,64 @@ const EditProduct = () => {
             setMediaUrl(data.media_url)
             setLoading(false)
         })
-    },[])
+    }, [])
 
     const handleSubmit = (event) => {
         const { currentTarget } = event;
         event.preventDefault();
-     
+
         const formData = new FormData(currentTarget)
-        console.log("edit submit",formData,formData.get('product_id'),formData.get('product_name'));
+        console.log("edit submit", formData, formData.get('product_id'), formData.get('product_name'));
         const newProductData = {
-            product_id:productItem.product_id,
+            product_id: productItem.product_id,
             name: formData.get('product_name'),
             description: formData.get("product_description"),
             price: formData.get("product_price"),
-            media_url: formData.get("product_image"),
+            media_url: formData.get("product_media_url"),
         }
-        console.log(newProductData,productItem.product_id, productItem)
-        Products.edit(newProductData,productItem.product_id)
+        console.log(newProductData, productItem.product_id, productItem)
+        Products.edit(newProductData, productItem.product_id)
             .then(response => {
                 console.log(response);
-        })
+                navigate(`/products/${productItem.product_id}`)
+            })
     }
-  
+
     return (
         <div>
-           <div>
-    
-            {
-            isLoading? (
-            <>
-                <h3>EDit is loading </h3>
-            </>):(
-                <div>
-                <form id="newProductForm" onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="product_name">Product Name:</label>
-                    <input type="text" name="product_name" id="product_name"  value={name} onChange={e=>setName(e.target.value)}/>
-                </div>
-                
-                <div>
-                    <label htmlFor="product_description">Description:</label>
-                    <input type="text" name="product_description" id="product_description"  value={description} onChange={e=>setDescription(e.target.value)}/>
-                </div>
-  
-                <div>
-                    <label htmlFor="product_price">Price</label>
-                    <input type="number" name="product_price" id="product_price" value={price} onChange={e=>setPrice(e.target.value)} steps="0.01"/>
-                </div>
-                
-                <div>
-                    <label htmlFor="product_media_url">ImageUrl:</label>
-                    <input type="text" name="product_media_url" id="product_media_url"value={mediaUrl} onChange={e=>setMediaUrl(e.target.value)} />
-                </div>
-                <input type="submit" value="Edit"/>
-                </form>
-                </div>
-            )}
-        </div>
+            <div>
+
+                {
+                    isLoading ? (
+                        <>
+                            <h3>EDit is loading </h3>
+                        </>) : (
+                        <div>
+                            <form id="newProductForm" onSubmit={handleSubmit}>
+                                <div>
+                                    <label htmlFor="product_name">Product Name:</label>
+                                    <input type="text" name="product_name" id="product_name" value={name} onChange={e => setName(e.target.value)} />
+                                </div>
+
+                                <div>
+                                    <label htmlFor="product_description">Description:</label>
+                                    <input type="text" name="product_description" id="product_description" value={description} onChange={e => setDescription(e.target.value)} />
+                                </div>
+
+                                <div>
+                                    <label htmlFor="product_price">Price</label>
+                                    <input type="number" name="product_price" id="product_price" value={price} onChange={e => setPrice(e.target.value)} steps="0.01" />
+                                </div>
+
+                                <div>
+                                    <label htmlFor="product_media_url">ImageUrl:</label>
+                                    <input type="text" name="product_media_url" id="product_media_url" value={mediaUrl} onChange={e => setMediaUrl(e.target.value)} />
+                                </div>
+                                <input type="submit" value="Edit" />
+                            </form>
+                        </div>
+                    )}
+            </div>
         </div>
     )
 }

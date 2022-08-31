@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser'
 
 import productRouter from './routes/product.js';
 import userRouter from './routes/user.js';
+import reviewRouter from './routes/review.js';
 
 
 const app = express();
@@ -30,6 +31,8 @@ app.use(cookieParser())
 
 app.use('/api/v1/users', userRouter)
 app.use('/api/v1/products', productRouter)
+app.use('/api/v1/reviews', reviewRouter)
+
 const PORT = 9900
 const DOMAIN = 'localhost'
 app.listen(PORT, DOMAIN, () => {
