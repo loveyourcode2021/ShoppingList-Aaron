@@ -9,7 +9,7 @@ const SingleProduct = () => {
     return (
         <>
         <div>
-            <h3>Sigle Product</h3>
+            <h3>Single Product</h3>
             <Outlet></Outlet>
         </div>
         </>

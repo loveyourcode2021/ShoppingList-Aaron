@@ -55,7 +55,7 @@ export const Products = {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: params
+            body: JSON.stringify(params)
         }).then(res => res.json());
     },
     create_t(params) {
@@ -106,7 +106,7 @@ export const Products = {
 
 export const Reviews = {
     index(id){
-        return fetch(`${baseURL}/products/${id}/reviews`, {
+        return fetch(`${baseURL}/reviews/${id}/index`, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -114,13 +114,14 @@ export const Reviews = {
             },
         }).then(res => res.json());
     },
-    create(params,id,rid){
-        return fetch(`${baseURL}/products/${id}/reviews`, {
+    create(params,id){
+        return fetch(`${baseURL}/reviews/${id}/new`, {
             method: 'POST',
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
+            body: JSON.stringify(params)
         }).then(res => res.json());
     },
     edit(params,id,rid){

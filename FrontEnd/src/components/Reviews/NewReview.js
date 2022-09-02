@@ -2,16 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Reviews } from "../../requests";
 import StarsRating from 'stars-rating'
 import uniqid from 'uniqid';
-
 import { useNavigate, useParams  } from "react-router-dom";
 
-
-import { useNavigate as navigate } from "react-router-dom";
-
+import ShowReview from "./ShowReview"
 
 const NewProduct = () => {
+    const [reviews, setReviews] = useState([])
     const params = useParams();
     const navigate = useNavigate()
+    const [isLoading, setLoading] = useState(true)
     const [rating, setRating] = useState(null)
     const ratingChanged = (newRating) => {
         setRating(newRating)
@@ -24,27 +23,30 @@ const NewProduct = () => {
         const formData = new FormData(currentTarget)
 
 
-
         const newReviewData = {
             "review_id": uniqid.time(),
             "product_id": params.id,
             "rating": rating,
-            "description": formData.get("review_body"),
+            "review_body": formData.get("review_body"),
             "created_at": new Date()
         }
-        Reviews.creates(newReviewData).then(resData => {
+        console.log(newReviewData)
+        Reviews.create(newReviewData, params.id).then(resData => {
             console.log(resData.json)
         })
-     
+        Reviews.index(params.id).then(res => {
+            setReviews(res)
+            setLoading(false)
+        }).catch(err => {
+            console.log(err)
+        })
     }
+     
 
 
     return (
-
         <>
-
-        <div className="App">
-
+        <div className='App'>
             <div>
                 <h2>this is a new Review!</h2>
                 <form id="newProductForm" onSubmit={handleSubmit}>
@@ -60,12 +62,12 @@ const NewProduct = () => {
                     <input type="submit" />
                 </form>
             </div>
-
-
-
-
-
-
+            <div>
+            {isLoading ?(<h3>Review List is Loadings</h3>) :
+            (
+                    <ShowReview reviews={reviews}/>
+            )}
+            </div>
         </div>
         </>
     );

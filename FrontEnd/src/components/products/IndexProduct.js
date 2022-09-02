@@ -2,20 +2,12 @@ import React, { useEffect,useState } from "react"
 import { Outlet } from "react-router-dom"
 import {Products} from "../../requests"
 import DetailedProduct from "./DetailedProduct"
-import {
-    ref,
-    uploadBytes,
-    getDownloadURL,
-    listAll,
-    list,
-  } from "firebase/storage";
-  import { storage } from "../../firebase";
+import uniqid from 'uniqid';
+
 const IndexProduct = () => {
     //product list container
     const [productList,setProductList] = useState([])
-    const [imageUrls, setImageUrls] = useState([]);
-    //boolean 
-    const imagesListRef = ref(storage, "images/");
+
     const [isLoading,setLoading] = useState(true)
     //mount the information
     useEffect(() => {
@@ -25,13 +17,7 @@ const IndexProduct = () => {
             setProductList(data)
             setLoading(false)
         })
-        listAll(imagesListRef).then((response) => {
-            response.items.forEach((item) => {
-              getDownloadURL(item).then((url) => {
-                setImageUrls((prev) => [...prev, url]);
-              });
-            });
-          });
+       
     },[])
     return (
       //if loading is true, shows loading
@@ -46,14 +32,12 @@ const IndexProduct = () => {
                  {
                      productList.map( (product, index) => {
                         return (                             
-                              <div key={index} className="card">
+                              <div key={uniqid.time()} className="card">
                                  <DetailedProduct product = {product}/>
-                             </div>                         )    
+                             </div> )    
                     })
                  }
-                  {imageUrls.map((url) => {
-                    return <img src={url} />;
-                })}
+              
             </div>
          )}
         </div>

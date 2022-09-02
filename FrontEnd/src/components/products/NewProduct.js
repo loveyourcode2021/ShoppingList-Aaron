@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Products } from "../../requests";
 import axios from 'axios';
+import uniqid from 'uniqid';
 import { FileUploader } from "react-drag-drop-files";
-
+import ReactPlayer from 'react-player'
 import { useNavigate,useParams  } from "react-router-dom";
+
 import {
     ref,
     uploadBytes,
@@ -18,18 +20,19 @@ import {
 
 const NewProduct = () => {
     const navigate = useNavigate()
-    const fileTypes = ["JPEG", "JPG", "PNG", "GIF", "MOV"];
+
+    const fileTypes = ["JPEG", "JPG", "PNG", "GIF", "MOV","AVI","MP4"];
     const [file, setFile] = useState(null);
-    const [count, setCount] = useState(0);
-    const params = useParams()
     const [imageUrls, setImageUrls] = useState([]);
     const [imageUpload, setImageUpload] = useState(null);
-    const imagesListRef = ref(storage, "images/");
+
     const handleChange = (file) => {
         setFile(file);
         setImageUpload(file)
-        console.log("file loaded")
+        console.log("file loaded", file[0].name)
     };
+
+ 
     const handleSubmit = (event) => {
         const { currentTarget } = event;
         event.preventDefault();
@@ -37,109 +40,77 @@ const NewProduct = () => {
         const formData = new FormData(currentTarget)
 
         const newProductData = {
-            product_id: formData.get('product_id'),
+            "product_id": uniqid.time(),
             name: formData.get('product_name'),
             description: formData.get("product_description"),
             price: formData.get("product_price"),
-            media_url: formData.get("product_media_url")||"whatever",
+            media_url: formData.get("product_media_url"),
         }
-        console.log(newProductData)
-        const imageRef = ref(storage, `images/${file[0].name}`);
+
+       
         Products.create(newProductData)
             .then(async (response) => {
                 console.log("Data Response--->",response);
-                setCount(1)
-            await uploadBytes(imageRef, file[0]).then((snapshot) => {
-                getDownloadURL(snapshot.ref).then((url) => {
-                    setImageUrls((prev) => [...prev, url]);
-                });
-            });
                 
-            await navigate(`/product/${params.id}`)
-     
         })
- 
- 
-     
-       
-     
 
+        if(!!file[0]){
+            const imageTypes = ["JPEG", "JPG", "PNG", "GIF", "SVG"];
+            const videoTypes = ["MOV","AVI","MP4"];
+            //check extention 
+            const ext = file[0].name.split('.')
+            .filter(Boolean)
+            .slice(1)
+            .join('.')
+            
+            const containImage = imageTypes.indexOf(ext.toUpperCase())!== -1
+            const containVideo = videoTypes.indexOf(ext.toUpperCase())!== -1
 
-         //Case1-----Start
-        // formData.append('file', file[0])
-        // console.log(file[0])
-        
-        // Products.create_axios(formData).then(res => res.json())
-        //Case1-----ending
-
-
-        //Case2-----Start
-        // Products.create(formData)
-        //     .then(response => {
-        //         console.log(response);
-        //         //navigate("/")
-        //     })
-         //Case2-----ENDING
-
-        //   if(isFileLoading){
-
-
-        //     formData.append("product_files", file)
-        //     for (const value of formData.values()) {
-        //       console.log(value);
-        //     }
-
-        //     // axios
-        //     // .post("http://localhost:9900/api/v1/products/new", formData, {
-        //     //   headers: {
-        //     //     "Content-Type": "multipart/form-data",
-        //     //     withCredentials: true
-        //     //   },
-        //     // })
-        //     axios
-        //     .post("http://localhost:9900/api/v1/products/new", formData)
-        //   }
-
-
+            let folderName = ""
+            if(containImage){
+                folderName = "images"
+            }
+            if(containVideo) {
+                folderName = "videos"
+            }
+            const mediaRef =  ref(storage, `${newProductData.product_id}/${folderName}/${file[0].name}`);
+             uploadBytes(mediaRef, file[0]).then((snapshot) => {
+               getDownloadURL(snapshot.ref).then((url) => {
+                   setImageUrls((prev) => [...prev, url]);
+               });
+           });
+           
+       }
+       navigate(`/products/index`)
     }
 
 
     return (
 
         <>
-
-        <div className="App">
-
-            <div>
+            <div key={uniqid.time()}>
                 <h2>Create a new product!</h2>
                 <form id="newProductForm" onSubmit={handleSubmit}>
-                    <div>
-                        <label htmlFor="product_id">Product ID:</label>
-                        <input type="text" name="product_id" id="product_id" />
-                    </div>
-                    <div>
+                    
+                        <div>
                         <label htmlFor="product_name">Product Name:</label>
                         <input type="text" name="product_name" id="product_name" />
-                    </div>
-
-                    <div>
+                        </div>
+                        <div>
                         <label htmlFor="product_description">Description:</label>
-                        <input type="text" name="product_description" id="product_description" />
-                    </div>
-
-                    <div>
+                        <input type="text" name="product_description" id="product_description"/>
+                        </div>
+                        <div>
                         <label htmlFor="product_price">Price</label>
                         <input type="number" name="product_price" id="product_price" />
-                    </div>
-
-                    <div>
+                        </div>
+                        <div>
                         <label htmlFor="product_media_url">ImageUrl:</label>
                         <input type="text" name="product_media_url" id="product_media_url" />
-                    </div>
-
-
+                        </div>
+                       
                     <div>
-                        <h1>Drag & Drop Files</h1>
+                        <h3>Drag & Drop Files</h3>
                         <FileUploader
                             multiple={true}
                             handleChange={handleChange}
@@ -152,13 +123,6 @@ const NewProduct = () => {
                     <input type="submit" />
                 </form>
             </div>
-
-
-
-
-
-
-        </div>
         </>
     );
 }

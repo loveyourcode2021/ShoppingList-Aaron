@@ -12,8 +12,8 @@ import {
     list,
   } from "firebase/storage";
 import NewReview from "./NewReview"
-import ShowReview from "./ShowReview"
-import "./rewivew.css"
+
+import "../../styles/rewivew.css"
 import { useNavigate as navigate, Outlet } from "react-router-dom";
 
 
@@ -26,9 +26,7 @@ const MainReviews = () => {
             <div>
                 <NewReview/>
             </div>
-            <div>
-                <ShowReview/>
-            </div>
+            
         </div>
         </>
     );

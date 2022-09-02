@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from "react"
-import { navigate} from "react-router-dom";
+
 import { Products } from "../../requests"
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams  } from "react-router-dom";
 
 const EditProduct = () => {
     const [productItem,setProductItem] = useState([])
@@ -13,6 +13,7 @@ const EditProduct = () => {
     const [price, setPrice] = useState("")
     const [mediaUrl, setMediaUrl] = useState("")
     //mount the information
+    const navigate = useNavigate()
 
     useEffect(() => {
         Products.show(params.id).then(data =>{
@@ -35,7 +36,7 @@ const EditProduct = () => {
         const formData = new FormData(currentTarget)
         console.log("edit submit",formData,formData.get('product_id'),formData.get('product_name'));
         const newProductData = {
-            product_id:productItem.product_id,
+            product_id:params.id,
             name: formData.get('product_name'),
             description: formData.get("product_description"),
             price: formData.get("product_price"),
@@ -45,6 +46,7 @@ const EditProduct = () => {
         Products.edit(newProductData,productItem.product_id)
             .then(response => {
                 console.log(response);
+                navigate(`/products/${params.id}`)
         })
     }
   

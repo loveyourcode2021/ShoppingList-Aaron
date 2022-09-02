@@ -29,33 +29,30 @@ export const SignInPage = ({ onSignIn }) => {
             })
     }
     return (
-        <main>
-            <h1>Sign In</h1>
-            <form onSubmit={handleSubmit}>
-                {/* {errors.length > 0 ? (
-                    <div>
-                        <h4>Failed to Sign In</h4>
-                        <p>{errors.map(error => error.message).join(", ")}</p>
-                    </div>
-                ) : (
-                    ""
-                )} */}
 
-                <div>
-                    <label htmlFor="email">Email</label>
-                    <input type="text" name="email" id="email" onChange={event => {
-                        setEmail(event.currentTarget.value)
-                    }} />
+            <div class="container">
+                <div class="card">
+                <h1 class="card_title">Login to your account</h1>
+               
                 </div>
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <input type="password" name="password" id="password" onChange={event => {
-                        setPassword(event.currentTarget.value)
-                    }} />
-                </div>
-                <input type="submit" value="Sign In" />
-            </form>
-        </main>
+        
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label htmlFor="email">Email</label>
+                        <input type="text" name="email" id="email" onChange={event => {
+                            setEmail(event.currentTarget.value)
+                        }} />
+                    </div>
+                    <div>
+                        <label htmlFor="password">Password</label>
+                        <input type="password" name="password" id="password" onChange={event => {
+                            setPassword(event.currentTarget.value)
+                        }} />
+                    </div>
+                    <input type="submit" value="Sign In" />
+                </form>
+            </div>
+
     )
 
 

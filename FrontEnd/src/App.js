@@ -3,6 +3,7 @@ import './App.css';
 import React, { useState, useEffect } from 'react';
 import { User } from "./requests"
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import axios from "axios"
 
 import NavBar from './components/NavBar';
 import Home from './components/Home';
@@ -24,8 +25,26 @@ import SingleProduct from './components/products/SingleProduct';
 import MainReviews from './components/Reviews/MainReviews'
 import ShowReview from './components/Reviews/ShowReview'
 import NewReview from './components/Reviews/NewReview'
+
+//YoutubeApi stuff for fun
+import Search from './components/youtube/Search'
+import youtubeApi from './components/youtube/YouTubeApi'
+
+
 function App() {
   const [currentUser, setCurrentUser] = useState(null)
+  //---youtube stuff starts---
+  const [videoMetaInfo, setVideoMetaInfo] = useState([])
+  const [selectedVideoId, setSelectedVideoId] = useState(null)
+  const onSearch  = async keyword => {
+    const response = await youtubeApi.get('/search',{
+      params:{
+        q:keyword
+      }
+    })
+    console.log(response)
+  }
+ //---youtube stuff ends---
 
   useEffect(() => {
     getCurrentUser()
@@ -44,6 +63,7 @@ function App() {
     <BrowserRouter>
       <NavBar currentUser={currentUser} onSignOut={onSignOut} />
       <Routes>
+  
         <Route index element={<Home />} /> 
         <Route path="signin" element={<SignInPage onSignIn={getCurrentUser} />} />
         <Route path="signup" element={<SignUpPage onSignUp={getCurrentUser} />} />
@@ -58,6 +78,7 @@ function App() {
               <Route path="delete" element={<DeleteProduct />} />
           </Route>
         </Route>
+        <Route path="youtube" element={<Search onSearch={onSearch}/>} /> 
         
       </Routes>
     </BrowserRouter>
@@ -65,5 +86,3 @@ function App() {
 }
 
 export default App;
-{/* <Route path="new" element={<DeleteProduct />} />
-<Route path=":rid" element={<ShowReview/>}> */}

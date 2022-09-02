@@ -1,6 +1,6 @@
 import React from "react"
 import { NavLink } from "react-router-dom";
-
+import uniqid from 'uniqid'
 
 const DetailedProduct = ({product}) => {
     const time = parseInt(product.createdAt.seconds.toString()+product.createdAt.nanoseconds.toString())
@@ -11,11 +11,11 @@ const DetailedProduct = ({product}) => {
     // const current_year = year
   
     return (
-        <div>
+        <div key={uniqid(product.product_id)}>
             <NavLink to={`/products/${product.product_id}`} >
             <h3>{product.name}</h3>
             </NavLink>
-            <p>{ time}</p>
+            <p>{new Date(product.createdAt.seconds*1000).toLocaleString()}</p>
         </div>
     )
 }
