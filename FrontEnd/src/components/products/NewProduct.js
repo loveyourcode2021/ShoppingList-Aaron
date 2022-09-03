@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState,  } from 'react';
 import { Products } from "../../requests";
-import axios from 'axios';
 import uniqid from 'uniqid';
 import { FileUploader } from "react-drag-drop-files";
-import ReactPlayer from 'react-player'
 import { useNavigate,useParams  } from "react-router-dom";
 
 import {
@@ -45,6 +43,7 @@ const NewProduct = () => {
             description: formData.get("product_description"),
             price: formData.get("product_price"),
             media_url: formData.get("product_media_url"),
+            src_url: formData.get("product_source_url")
         }
 
        
@@ -102,11 +101,15 @@ const NewProduct = () => {
                         </div>
                         <div>
                         <label htmlFor="product_price">Price</label>
-                        <input type="number" name="product_price" id="product_price" />
+                        <input type="number" name="product_price" id="product_price" steps="0.01"/>
                         </div>
                         <div>
                         <label htmlFor="product_media_url">ImageUrl:</label>
                         <input type="text" name="product_media_url" id="product_media_url" />
+                        </div>
+                        <div>
+                        <label htmlFor="product_source_url">SourceUrl:</label>
+                        <input type="text" name="product_source_url" id="product_source_url" />
                         </div>
                        
                     <div>

@@ -1,11 +1,11 @@
 import React,{useState,useEffect} from "react"
 import { Link, NavLink } from "react-router-dom";
 import { Products } from "../../requests"
-import { useParams, Outlet } from "react-router-dom";
+import { useParams,  } from "react-router-dom";
 import MainReviews from "../Reviews/MainReviews";
 import uniqid from 'uniqid'
 
-import ReactPlayer from 'react-player'
+
 import {
     ref,
     uploadBytes,
@@ -99,9 +99,7 @@ const ShowProduct = () => {
                     
                 </div>
     
-                <MainReviews/>
-   
-                </>
+                <MainReviews srcUrl={productItem.src_url}/></>
             )}
          
 

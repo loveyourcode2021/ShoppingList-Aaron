@@ -6,12 +6,14 @@ import { useNavigate, useParams  } from "react-router-dom";
 
 import ShowReview from "./ShowReview"
 
-const NewProduct = () => {
-    const [reviews, setReviews] = useState([])
+const NewProduct = ({srcLink}) => {
+    const [review_list, setReviewsList] = useState([])
     const params = useParams();
     const navigate = useNavigate()
     const [isLoading, setLoading] = useState(true)
     const [rating, setRating] = useState(null)
+    const [scraps, setScrap] = useState(null)
+    const pid = params.id
     const ratingChanged = (newRating) => {
         setRating(newRating)
       }
@@ -21,7 +23,7 @@ const NewProduct = () => {
         event.preventDefault();
         // do cool stuff here
         const formData = new FormData(currentTarget)
-
+        setReviewsList([])
 
         const newReviewData = {
             "review_id": uniqid.time(),
@@ -31,17 +33,45 @@ const NewProduct = () => {
             "created_at": new Date()
         }
         console.log(newReviewData)
+        //it works
         Reviews.create(newReviewData, params.id).then(resData => {
             console.log(resData.json)
         })
-        Reviews.index(params.id).then(res => {
-            setReviews(res)
+
+        //here does not work
+        Reviews.index(pid).then(res => {
+            setReviewsList(res)
+            console.log("my new datas are >>",review_list)
             setLoading(false)
+            console.log(res)
         }).catch(err => {
             console.log(err)
         })
     }
-     
+    useEffect(()=>{
+        console.log("amazon>>>",srcLink)
+        console.log("newReview Called?")
+        Reviews.index(pid).then(res => {
+            setReviewsList(res)
+            console.log("my new datas are >>",review_list)
+  
+    
+        }).catch(err => {
+            console.log(err)
+        })
+               
+        console.log("Amazon Scraping started")
+        const userData ={
+            "url":srcLink,
+            "product_id":pid
+        }
+        Reviews.getScrap(userData).then((res)=> {
+            setScrap(res)
+            console.log("amazon",res)
+            setLoading(false)
+        })
+      
+    },[])
 
 
     return (
@@ -65,7 +95,7 @@ const NewProduct = () => {
             <div>
             {isLoading ?(<h3>Review List is Loadings</h3>) :
             (
-                    <ShowReview reviews={reviews}/>
+                    <ShowReview reviews={review_list} scrap_list={scraps}/>
             )}
             </div>
         </div>

@@ -1,11 +1,12 @@
 import React from 'react';
-import { User } from '../requests';
 import { NavLink } from 'react-router-dom';
 import '../styles/NavBar.css'
 
 
 function NavBar(props) {
   const { currentUser, onSignOut } = props
+
+
 
   return (
     <>

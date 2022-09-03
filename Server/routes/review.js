@@ -33,6 +33,7 @@ router.post(`/:id/new`, async (req, res) => {
     const {product_id, review_id, rating, review_body } = req.body
     try {
         const reviewData = {
+            review_id:uniqid.time(),
             product_id,
             review_id,
             rating,
@@ -92,7 +93,7 @@ router.patch('/:id/edit', async (req, res) => {
         await updateDoc(doc.ref, newProduct).then(data => res.status(200).send(data))
             .catch(e => {
                 res.status(403).send(e)
-            });
+        });
 
     })
 })
@@ -128,16 +129,16 @@ router.post('/getReviews', async (req, res) => {
         $('div[data-hook="review"]').each(async (i, elem) => {
             const ratingText = $(elem).find('i[data-hook="review-star-rating"]').text()
             const rating = parseFloat(ratingText.split(' ')[0])
-            const title = $(elem).find('a[data-hook="review-title"]').text().trim()
-            const date = $(elem).find('span[data-hook="review-date"]').text()
+            // const title = $(elem).find('a[data-hook="review-title"]').text().trim()
+            const createdAt = $(elem).find('span[data-hook="review-date"]').text()
             const reviewBody = $(elem).find('span[data-hook="review-body"]').text().trim()
 
             const reviewData = {
+                "review_id":uniqid.time(),
                 rating,
-                title,
-                date,
                 reviewBody,
-                product_id
+                product_id,
+                createdAt,
             }
 
             try {

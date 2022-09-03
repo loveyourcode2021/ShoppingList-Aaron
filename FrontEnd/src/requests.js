@@ -124,6 +124,9 @@ export const Reviews = {
             body: JSON.stringify(params)
         }).then(res => res.json());
     },
+    getScrap(userData){
+        return axios.post(`${baseURL}/reviews/getReviews`,userData).then(res => res.JSON())
+    },
     edit(params,id,rid){
         return fetch(`${baseURL}/products/${id}/reviews/${rid}/delete`, {
             method: 'PATCH',
@@ -142,6 +145,4 @@ export const Reviews = {
             },
         }).then(res => res.json());
     },
-
-
 }
