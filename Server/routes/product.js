@@ -1,12 +1,10 @@
 import express from 'express';
 import { addDoc, collection, doc, deleteDoc, where, query, getDoc, getDocs, updateDoc, onSnapshot, serverTimestamp, collectionGroup } from 'firebase/firestore';
 
-import { collections, db,storage } from '../firebase.js';
-import {ref,uploadBytes,getDownloadURL,listAll,list,} from "firebase/storage";
-import {  uploadBytesResumable  } from "firebase/storage";
-import { Blob } from "buffer";
-import multer from "multer";
-import fs from 'fs';
+import { collections, db, storage } from '../firebase.js';
+import { ref, uploadBytes, getDownloadURL, listAll, list, } from "firebase/storage";
+import { uploadBytesResumable } from "firebase/storage";
+
 
 
 const router = express.Router();
@@ -30,7 +28,7 @@ router.post('/new', async (req, res) => {
         description,
         price,
         media_url
-    } =  req.body
+    } = req.body
 
     const newProduct = {
         product_id,
@@ -44,7 +42,7 @@ router.post('/new', async (req, res) => {
 
 
     try {
-        const newProductRef = await addDoc(collection(db, collections.PRODUCTS ), newProduct)
+        const newProductRef = await addDoc(collection(db, collections.PRODUCTS), newProduct)
         const responseJson = { ...newProductRef, id: newProductRef.id }
         res.status(200).send("all good!")
     } catch (error) {
@@ -70,7 +68,7 @@ router.get('/:id', async (req, res) => {
 
 //edit middle ware
 router.patch('/:id/edit', async (req, res) => {
-    
+
     const data = req.body;
     // const { product_id, name, price, product_img, description } = req.body;
     const {
@@ -78,7 +76,7 @@ router.patch('/:id/edit', async (req, res) => {
         description,
         price,
         media_url
-    } =  req.body
+    } = req.body
 
 
     const newProduct = {
@@ -89,33 +87,33 @@ router.patch('/:id/edit', async (req, res) => {
         createdAt: new Date()
     }
 
-    const q = query(collection(db, collections.PRODUCTS),  where("product_id", "==", req.params.id))
+    const q = query(collection(db, collections.PRODUCTS), where("product_id", "==", req.params.id))
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach(async (doc) => {
-        
-        await updateDoc(doc.ref, newProduct).then(data => {res.send(data)})
-  
-        .catch(e => {
-            res.send(e)
-        });
+
+        await updateDoc(doc.ref, newProduct).then(data => { res.send(data) })
+
+            .catch(e => {
+                res.send(e)
+            });
 
     })
 })
 
 router.post('/:id/delete', async (req, res) => {
-   
-    const  product_id  = req.params.id
+
+    const product_id = req.params.id
     const q = query(collection(db, collections.PRODUCTS), where("product_id", "==", product_id));
     let foundData = ""
-  
+
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach(async (doc) => {
         await deleteDoc(doc.ref)
-        .then(data => res.status(200).send(data))
-        .catch(e => {
-            res.status(403).send(e)
-        });
-     });
+            .then(data => res.status(200).send(data))
+            .catch(e => {
+                res.status(403).send(e)
+            });
+    });
 });
 
 

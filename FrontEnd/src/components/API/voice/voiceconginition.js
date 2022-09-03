@@ -1,6 +1,15 @@
 const SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
 
-export const recognition = new SpeechRecognition();
+let recognition = null;
 
-recognition.start();
+try {
+  recognition = new SpeechRecognition();
+  recognition.continuous = true;
+  recognition.start();
+} catch (error) {
+  console.log("Speech Recognition API not loaded");
+}
+
+
+export { recognition }

@@ -10,7 +10,7 @@ const router = express.Router();
 
 
 router.get('/:id/index', async (req, res) => {
-    try{
+    try {
         const pid = req.params.id;
         const q = query(collection(db, collections.REVIEWS), where("product_id", "==", pid));
         let review_list = []
@@ -18,29 +18,29 @@ router.get('/:id/index', async (req, res) => {
         querySnapshot.forEach((doc) => {
             review_list.push(doc.data())
         });
-    
-        if(review_list.length>0){
+
+        if (review_list.length > 0) {
             res.send(review_list)
         }
-    }catch(e){
+    } catch (e) {
         res.send(e)
     }
-      
-   
+
+
 })
 //creates new product
 router.post(`/:id/new`, async (req, res) => {
-    const {product_id, review_id, rating, review_body } = req.body
+    const { product_id, review_id, rating, review_body } = req.body
     try {
         const reviewData = {
-            review_id:uniqid.time(),
+            review_id: uniqid.time(),
             product_id,
             review_id,
             rating,
             review_body,
             "createdAt": new Date()
         }
-        await addDoc(collection(db, collections.REVIEWS),reviewData );
+        await addDoc(collection(db, collections.REVIEWS), reviewData);
         res.status(200).send({ message: "all good!" });
 
     } catch (error) {
@@ -93,7 +93,7 @@ router.patch('/:id/edit', async (req, res) => {
         await updateDoc(doc.ref, newProduct).then(data => res.status(200).send(data))
             .catch(e => {
                 res.status(403).send(e)
-        });
+            });
 
     })
 })
@@ -116,43 +116,56 @@ router.post('/:id/delete', async (req, res) => {
 //Scrap Amazon
 router.post('/getReviews', async (req, res) => {
     const { url, product_id } = req.body;
+    // query firestore for existing
+    // if no existing docs found
     let reviewsCreated = 0
-    try {
-        const rawHtml = await axios.get(url,
-            {
-                headers: {
-                    'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101 Firefox/104.0"
+    const reviewDocs = [];
+    const existingReviewsQuery = query(collection(db, collections.REVIEWS), where("product_id", "==", product_id))
+    const existingReviewsSnapshot = await getDocs(existingReviewsQuery)
+    if (!existingReviewsSnapshot.empty) {
+        // add each doc to our array of reviewDocs
+        existingReviewsSnapshot.forEach(doc => {
+            reviewDocs.push(doc.data())
+        })
+    } else { // we have no existing reviews, and need to scrape the URL
+        try {
+            const rawHtml = await axios.get(url,
+                {
+                    headers: {
+                        'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101 Firefox/104.0"
+                    }
+                })
+            const $ = cheerio.load(rawHtml.data)
+            console.log($);
+            $('div[data-hook="review"]').each(async (i, elem) => {
+                const ratingText = $(elem).find('i[data-hook="review-star-rating"]').text()
+                const rating = parseFloat(ratingText.split(' ')[0])
+                const title = $(elem).find('a[data-hook="review-title"]').text().trim()
+                const createdAt = $(elem).find('span[data-hook="review-date"]').text()
+                const reviewBody = $(elem).find('span[data-hook="review-body"]').text().trim()
+
+                const reviewData = {
+                    "review_id": uniqid.time(),
+                    rating,
+                    reviewBody,
+                    product_id,
+                    createdAt,
+                    title
+                }
+
+                try {
+                    reviewsCreated++;
+                    const newReviewDoc = await addDoc(collection(db, collections.REVIEWS), reviewData);
+                    reviewDocs.push(newReviewDoc)
+                } catch (error) {
+                    console.log(error);
                 }
             })
-        const $ = cheerio.load(rawHtml.data)
-        console.log($);
-        $('div[data-hook="review"]').each(async (i, elem) => {
-            const ratingText = $(elem).find('i[data-hook="review-star-rating"]').text()
-            const rating = parseFloat(ratingText.split(' ')[0])
-            // const title = $(elem).find('a[data-hook="review-title"]').text().trim()
-            const createdAt = $(elem).find('span[data-hook="review-date"]').text()
-            const reviewBody = $(elem).find('span[data-hook="review-body"]').text().trim()
-
-            const reviewData = {
-                "review_id":uniqid.time(),
-                rating,
-                reviewBody,
-                product_id,
-                createdAt,
-            }
-
-            try {
-                reviewsCreated++;
-                //const newProductRef = await addDoc(collection(db, collections.REVIEWS), reviewData)
-                const newProductRef = await setDoc(collection(db, collections.REVIEWS,product_id), reviewData)
-            } catch (error) {
-                console.log(error);
-            }
-        })
-        res.send(`${reviewsCreated} reviews created!`)
-    } catch (error) {
-        console.log(error);
+        } catch (error) {
+            console.log(error);
+        }
     }
+    res.json(reviewDocs)
 
 })
 

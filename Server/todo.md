@@ -35,3 +35,14 @@ Aug 27th TODO / Notes
 - edit page & delete, route not working
 - ecommerce first plan, now analyzing product, make up video/photo, order from amazon, make analysis, and leave comment based on analysis 
 - add admin panel, user panel to see item selected
+
+
+Sept 3rd
+- display reviews
+  - query firestore for existing review documents
+    - if we have existing
+      - create an array of existing review docs
+    - otherwise
+      - we scrape the url provided and create review document(s) and push to array
+  - return an array
+- additional firestore logic to prevent overlapping properties (same productid, etc.)
