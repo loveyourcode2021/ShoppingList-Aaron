@@ -46,3 +46,15 @@ Sept 3rd
       - we scrape the url provided and create review document(s) and push to array
   - return an array
 - additional firestore logic to prevent overlapping properties (same productid, etc.)
+
+Sept 4th
+- Solve routing issue DONE
+- look at web scraping for new products
+  - fully automatic
+  - image url, same structure but automatically obtained from cheerio
+  - got name & image url, but dont have price or description
+
+
+Debugging:
+- Browser
+- in IDE

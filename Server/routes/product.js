@@ -28,41 +28,52 @@ router.post('/new', async (req, res) => {
         src_url,
     } = req.body
 
-    try {
-        const rawHtml = await axios.get(src_url,
-            {
-                headers: {
-                    'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101 Firefox/104.0"
+    const existingProductsQuery = query(collection(db, collections.PRODUCTS), where("src_url", "==", src_url));
+    const existingProductsSnapshot = await getDocs(existingProductsQuery)
+
+    if (existingProductsSnapshot.empty) {
+        try {
+            const rawHtml = await axios.get(src_url,
+                {
+                    headers: {
+                        'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101 Firefox/104.0"
+                    }
+                })
+            const $ = cheerio.load(rawHtml.data)
+            //.find('li:first').find("span").text().trim()
+            const name = $('div[data-feature-name="title"]').find('span[id="productTitle"]').text().trim()
+            const descriptionText = [];
+            const description = $('div[data-feature-name="featurebullets"]').find('ul > li').each(async (index, elem) => {
+                descriptionText.push($(elem).text().trim());
+            })
+            $('div[data-feature-name="apex_desktop"]').find('ul[class="a-unordered-list"]').each(async (ele, ind) => {
+                if (ind === 0) {
+                    description = $(ele).find('span').text().trim()
                 }
             })
-        const $ = cheerio.load(rawHtml.data)
-        //.find('li:first').find("span").text().trim()
-        const name = $('div[data-feature-name="title"]').find('span[id="productTitle"]').text().trim()
-        let description = "" 
-        $('div[data-feature-name="apex_desktop"]').find('ul[class="a-unordered-list"]').each(async (ele, ind) => {
-            if(ind === 0){
-                description = $(ele).find('span').text().trim()
+            const media_url = $('li[data-csa-c-posy="1"]').find('img').attr('src')
+            const price = parseFloat($('div#corePrice_feature_div').find('span.a-offscreen').text().replace(/[^\d.]/g, ''));
+
+            const newProduct = {
+                product_id,
+                media_url,
+                name,
+                descriptionText,
+                price,
+                src_url,
+                createdAt: new Date()
             }
-        })
-        const image_url = $('li[data-csa-c-posy="1"]').find('img').attr('src')
-        const price = parseFloat($('div[data-feature-name="corePriceDisplay_desktop"]').find('span[class="a-offscreen"]').text().trim().substring(1, 4))
 
-        const newProduct = {
-            product_id,
-            image_url,
-            name,
-            description,
-            price,
-            src_url,
-            createdAt: new Date()
+            const newProductRef = await addDoc(collection(db, collections.PRODUCTS), newProduct)
+            // const responseJson = { ...newProductRef, id: newProductRef.id }
+            res.status(200).json({ message: "product added" })
+        } catch (error) {
+            console.log(`Error: ${error}`);
         }
-
-        // const newProductRef = await addDoc(collection(db, collections.PRODUCTS), newProduct)
-        // const responseJson = { ...newProductRef, id: newProductRef.id }
-        res.status(200).send("all good!")
-    } catch (error) {
-        console.log(`Error: ${error}`);
+    } else { // product already in database
+        res.status(406).json({ message: "product already in database!" })
     }
+
 })
 
 //creates new product

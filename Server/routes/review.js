@@ -122,20 +122,21 @@ router.post('/getReviews', async (req, res) => {
     const reviewDocs = [];
     const existingReviewsQuery = query(collection(db, collections.REVIEWS), where("product_id", "==", product_id))
     const existingReviewsSnapshot = await getDocs(existingReviewsQuery)
-    if (!existingReviewsSnapshot.empty) {
+    const existingReviewsFound = !existingReviewsSnapshot.empty
+    if (existingReviewsFound) {
         // add each doc to our array of reviewDocs
         existingReviewsSnapshot.forEach(doc => {
             reviewDocs.push(doc.data())
         })
     } else { // we have no existing reviews, and need to scrape the URL
         try {
-           const rawHtml = await axios.get(url,
+            const rawHtml = await axios.get(url,
                 {
                     headers: {
                         'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101 Firefox/104.0"
                     }
                 })
-            const $ = cheerio.load(rawHtml.data) 
+            const $ = cheerio.load(rawHtml.data)
             console.log($);
             $('div[data-hook="review"]').each(async (i, elem) => {
                 const ratingText = $(elem).find('i[data-hook="review-star-rating"]').text()

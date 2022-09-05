@@ -17,26 +17,9 @@ const NewProduct = ({ reviews, scrap_list }) => {
 
             <>
                 <div>
-                    <h3>--Users Review--</h3>
-                    {
-                        reviews.map((element => {
-                            return (
-                                <div key={element.reivew_id}>
-                                    <StarsRating
-                                        count={element.rating}
-                                        size={24}
-                                        color1={'#ffcc00'} />
-                                    <p>
-                                        Description : {element.review_body}
-                                    </p>
-                                    <h1>element</h1>
-                                </div>
-                            )
-                        }))
-                    }
                     <h3>--Amazon Review--</h3>
                     {
-                        scrap_list.map(scrap => {
+                        scrap_list.map((scrap) => {
                             return (
                                 <div key={scrap.review_id}>
                                     <StarsRating

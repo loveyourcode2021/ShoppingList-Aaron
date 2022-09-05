@@ -10,7 +10,7 @@ const Camera = () => {
 
   const loadModels = () => {
     const MODEL_URL = `${process.env.PUBLIC_URL}/models`;
-  
+
     return Promise.all([
       faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
       faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
@@ -19,33 +19,34 @@ const Camera = () => {
       faceapi.nets.ageGenderNet.loadFromUri(MODEL_URL),
     ]);
   };
+
   const detectFaces = async image => {
     if (!image) {
       return;
     }
-  
+
     const imgSize = image.getBoundingClientRect();
-    const displaySize = {width: imgSize.width, height: imgSize.height};
+    const displaySize = { width: imgSize.width, height: imgSize.height };
     if (displaySize.height === 0) {
       return;
     }
-    console.log("where am i",process.env.PUBLIC_URL)
+    console.log("where am i", process.env.PUBLIC_URL)
     const faces = await faceapi
       .detectAllFaces(
         image,
-        new faceapi.TinyFaceDetectorOptions({inputSize: 320})
+        new faceapi.TinyFaceDetectorOptions({ inputSize: 320 })
       )
       .withFaceLandmarks()
       .withFaceExpressions()
       .withAgeAndGender();
-  
+
     return faceapi.resizeResults(faces, displaySize);
   };
-  
-   const drawResults = async (image, canvas, results, type) => {
+
+  const drawResults = async (image, canvas, results, type) => {
     if (image && canvas && results) {
       const imgSize = image.getBoundingClientRect();
-      const displaySize = {width: imgSize.width, height: imgSize.height};
+      const displaySize = { width: imgSize.width, height: imgSize.height };
       faceapi.matchDimensions(canvas, displaySize);
       canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
       const resizedDetections = faceapi.resizeResults(results, displaySize);
@@ -82,9 +83,11 @@ const Camera = () => {
   };
 
   const clearOverlay = canvas => {
-    canvas.current
-      .getContext("2d")
-      .clearRect(0, 0, canvas.width, canvas.height);
+    if (canvas?.current) {
+      canvas.current
+        .getContext("2d")
+        .clearRect(0, 0, canvas.width, canvas.height);
+    }
   };
 
   useEffect(() => {
@@ -97,33 +100,33 @@ const Camera = () => {
         clearOverlay(cameraCanvas);
         clearInterval(ticking);
       };
-    } else {
+    } else { // camera equals null
       return clearOverlay(cameraCanvas);
     }
   }, []);
 
- 
+
 
   return (
     <div className="camera">
       <div className="camera__wrapper">
-      <div>This is HOME Page</div>
+        <div>This is HOME Page</div>
         <Webcam audio={false} ref={camera} width="100%" height="auto" />
         <canvas
           className=
-            "webcam-overlay"
+          "webcam-overlay"
           ref={cameraCanvas}
         />
       </div>
-        <>
-          <div className="results__container">
+      <>
+        <div className="results__container">
           <div>
             <p>I think...</p>
             {results.map((result, i) => (
               <div className="results__wrapper" key={i}>
                 <div>
                   <p>
-                    Your gerder is {result.gender} and Your face express  is 
+                    Your gerder is {result.gender} and Your face express  is
                     {result.expressions.asSortedArray()[0].expression} and looks
                     around {Math.round(result.age)}. Your gender is {result.gender}
                   </p>
@@ -131,8 +134,8 @@ const Camera = () => {
               </div>
             ))}
           </div>
-          </div>
-        </>
+        </div>
+      </>
     </div>
   );
 };

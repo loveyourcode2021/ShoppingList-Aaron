@@ -11,9 +11,8 @@ function NavBar(props) {
   const listeningRef = useRef(false);
   const navigate = useNavigate();
   recognition.continuous = true;
+
   const handleVoiceResult = (event) => {
-
-
     const command = event.results[event.results.length - 1][0].transcript;
     console.log(command)
     if (!listeningRef.current && command.includes("start react")) {
@@ -37,7 +36,7 @@ function NavBar(props) {
           navigate("/signin")
         } else if (command.includes("sign up")) {
           navigate("/signup")
-        }else if (command.includes("sign out")) {
+        } else if (command.includes("sign out")) {
           navigate("/signout")
         }
       } else if (
@@ -46,11 +45,14 @@ function NavBar(props) {
         listeningRef.current = false;
       }
     }
-    console.log(listeningRef.current )
+    console.log(listeningRef.current)
   }
 
   useEffect(() => {
     recognition.addEventListener('result', handleVoiceResult)
+    let utterance = new SpeechSynthesisUtterance("Hello world!");
+    speechSynthesis.speak(utterance);
+
     return () => {
       recognition.removeEventListener('result', handleVoiceResult)
     }
@@ -62,7 +64,6 @@ function NavBar(props) {
     recognition.onresult = (event) => {
     }
   }
-
 
   return (
     <>
