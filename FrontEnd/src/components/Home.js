@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react'
-
+import Camera from "./API/face/camera"
 const Home = () => {
   useEffect(() => {
     console.log("Home")
   }, [])
   return (
     <>
-      <div>This is HOME Page</div>
+     
+      <Camera></Camera>
     </>
   )
 }

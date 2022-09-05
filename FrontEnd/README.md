@@ -73,3 +73,10 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 https://www.amazon.ca/Lepro-Adjustable-Eye-Caring-Charging-Brightness/dp/B08LMPCX3D?th=1
 Lepro LED Desk Lamp, Adjustable Eye-Caring Desk Light
 30.99
+
+### `npm styles`
+npm install @mui/material @emotion/react @emotion/styled
+github https://github.com/mui/material-ui/blob/v5.10.3/docs/data/material/getting-started/installation/installation.md
+
+github signup format
+https://github.com/mui/material-ui/blob/v5.10.3/docs/data/material/getting-started/templates/sign-in/SignIn.js

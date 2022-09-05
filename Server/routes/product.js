@@ -4,7 +4,8 @@ import { addDoc, collection, doc, deleteDoc, where, query, getDoc, getDocs, upda
 import { collections, db, storage } from '../firebase.js';
 import { ref, uploadBytes, getDownloadURL, listAll, list, } from "firebase/storage";
 import { uploadBytesResumable } from "firebase/storage";
-
+import * as cheerio from 'cheerio';
+import axios from 'axios';
 
 
 const router = express.Router();
@@ -24,31 +25,84 @@ router.post('/new', async (req, res) => {
 
     const {
         product_id,
-        name,
-        description,
-        price,
-        media_url
+        src_url,
     } = req.body
 
-    const newProduct = {
-        product_id,
-        name,
-        description,
-        price,
-        media_url,
-        createdAt: new Date()
-    }
-
-
-
     try {
-        const newProductRef = await addDoc(collection(db, collections.PRODUCTS), newProduct)
-        const responseJson = { ...newProductRef, id: newProductRef.id }
+        const rawHtml = await axios.get(src_url,
+            {
+                headers: {
+                    'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101 Firefox/104.0"
+                }
+            })
+        const $ = cheerio.load(rawHtml.data)
+        //.find('li:first').find("span").text().trim()
+        const name = $('div[data-feature-name="title"]').find('span[id="productTitle"]').text().trim()
+        let description = "" 
+        $('div[data-feature-name="apex_desktop"]').find('ul[class="a-unordered-list"]').each(async (ele, ind) => {
+            if(ind === 0){
+                description = $(ele).find('span').text().trim()
+            }
+        })
+        const image_url = $('li[data-csa-c-posy="1"]').find('img').attr('src')
+        const price = parseFloat($('div[data-feature-name="corePriceDisplay_desktop"]').find('span[class="a-offscreen"]').text().trim().substring(1, 4))
+
+        const newProduct = {
+            product_id,
+            image_url,
+            name,
+            description,
+            price,
+            src_url,
+            createdAt: new Date()
+        }
+
+        // const newProductRef = await addDoc(collection(db, collections.PRODUCTS), newProduct)
+        // const responseJson = { ...newProductRef, id: newProductRef.id }
         res.status(200).send("all good!")
     } catch (error) {
         console.log(`Error: ${error}`);
     }
 })
+
+//creates new product
+// router.post('/new', async (req, res) => {
+
+//     const {
+//         product_id,
+//         name,
+//         description,
+//         price,
+//         media_url
+//     } = req.body
+
+//     const newProduct = {
+//         product_idLu,
+//         name,
+//         description,
+//         price,
+//         media_url,
+//         createdAt: new Date()
+//     }
+
+
+
+//     try {
+//         const rawHtml = await axios.get(url,
+//             {
+//                 headers: {
+//                     'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101 Firefox/104.0"
+//                 }
+//             })
+//         const $ = cheerio.load(rawHtml.data)
+//         const newProductRef = await addDoc(collection(db, collections.PRODUCTS), newProduct)
+//         const responseJson = { ...newProductRef, id: newProductRef.id }
+//         res.status(200).send("all good!")
+//     } catch (error) {
+//         console.log(`Error: ${error}`);
+//     }
+// })
+
 
 //hook up specific one item and display
 router.get('/:id', async (req, res) => {

@@ -9,31 +9,35 @@ function NavBar(props) {
   const { currentUser, onSignOut } = props
   const [stopReco, setStopReco] = useState(false);
   const listeningRef = useRef(false);
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
+  recognition.continuous = true;
   const handleVoiceResult = (event) => {
+
+
     const command = event.results[event.results.length - 1][0].transcript;
     console.log(command)
-    if (!listeningRef.current && command.includes("start listening")) {
+    if (!listeningRef.current && command.includes("start react")) {
       listeningRef.current = true;
     } else if (listeningRef.current) {
       if (command.includes("go to")) {
         if (command.includes("home")) {
           navigate("/")
         } else if (
-          command.includes("new products")
+          command.includes("new product")
         ) {
           navigate("/products/new")
         } else if (
 
-          command.includes("products")
+          command.includes("product")
         ) {
           navigate("/products")
         } else if (
-          command.includes("signin")
+          command.includes("sign in")
         ) {
           navigate("/signin")
-        } else if (command.includes("signout")) {
+        } else if (command.includes("sign up")) {
+          navigate("/signup")
+        }else if (command.includes("sign out")) {
           navigate("/signout")
         }
       } else if (
@@ -42,6 +46,7 @@ function NavBar(props) {
         listeningRef.current = false;
       }
     }
+    console.log(listeningRef.current )
   }
 
   useEffect(() => {

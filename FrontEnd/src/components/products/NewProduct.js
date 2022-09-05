@@ -37,23 +37,26 @@ const NewProduct = () => {
         // do cool stuff here
         const formData = new FormData(currentTarget)
 
-        const newProductData = {
-            "product_id": uniqid.time(),
-            name: formData.get('product_name'),
-            description: formData.get("product_description"),
-            price: formData.get("product_price"),
-            media_url: formData.get("product_media_url"),
-            src_url: formData.get("product_source_url")
-        }
+        // const newProductData = {
+        //     "product_id": uniqid.time(),
+        //     name: formData.get('product_name'),
+        //     description: formData.get("product_description"),
+        //     price: formData.get("product_price"),
+        //     media_url: formData.get("product_media_url"),
+        //     src_url: formData.get("product_source_url")
+        // }
 
-       
+       const newProductData = {
+        "product_id": uniqid.time(),
+        "src_url": formData.get("product_source_url")
+       }
         Products.create(newProductData)
             .then(async (response) => {
                 console.log("Data Response--->",response);
                 
         })
 
-        if(!!file[0]){
+        if(!!file){
             const imageTypes = ["JPEG", "JPG", "PNG", "GIF", "SVG"];
             const videoTypes = ["MOV","AVI","MP4"];
             //check extention 
@@ -91,7 +94,7 @@ const NewProduct = () => {
                 <h2>Create a new product!</h2>
                 <form id="newProductForm" onSubmit={handleSubmit}>
                     
-                        <div>
+                        {/* <div>
                         <label htmlFor="product_name">Product Name:</label>
                         <input type="text" name="product_name" id="product_name" />
                         </div>
@@ -106,11 +109,8 @@ const NewProduct = () => {
                         <div>
                         <label htmlFor="product_media_url">ImageUrl:</label>
                         <input type="text" name="product_media_url" id="product_media_url" />
-                        </div>
-                        <div>
-                        <label htmlFor="product_source_url">SourceUrl:</label>
-                        <input type="text" name="product_source_url" id="product_source_url" />
-                        </div>
+                        </div> */}
+              
                        
                     <div>
                         <h3>Drag & Drop Files</h3>
@@ -122,7 +122,10 @@ const NewProduct = () => {
                         />
                         <p>{file ? `File name: ${file[0].name}` : "no files uploaded yet"}</p>
                     </div>
-
+                    <div>
+                        <label htmlFor="product_source_url">SourceUrl:</label>
+                        <input type="text" name="product_source_url" id="product_source_url" />
+                    </div>
                     <input type="submit" />
                 </form>
             </div>
