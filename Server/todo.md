@@ -58,3 +58,8 @@ Sept 4th
 Debugging:
 - Browser
 - in IDE
+
+Sept 6
+- adding a new Review DONE
+- general CSS
+  - look at the tbody + div error

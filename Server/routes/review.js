@@ -30,22 +30,23 @@ router.get('/:id/index', async (req, res) => {
 })
 //creates new product
 router.post(`/:id/new`, async (req, res) => {
-    const { product_id, review_id, title, rating, review_body } = req.body
+    const { product_id, review_id, title, rating, review_body, createdAt } = req.body
     try {
         const reviewData = {
-            review_id: uniqid.time(),
-            product_id,
             review_id,
+            product_id,
             title,
             rating,
             review_body,
-            "createdAt": new Date()
+            createdAt
         }
-        await addDoc(collection(db, collections.REVIEWS), reviewData);
-        res.status(200).send({ message: "all good!" });
+        const newReviewRef = await addDoc(collection(db, collections.REVIEWS), reviewData);
+        const newReviewDoc = await getDoc(newReviewRef)
+        res.status(200).json(newReviewDoc.data())
 
     } catch (error) {
         console.log(`Error: ${error}`);
+        res.json(error)
     }
 })
 
@@ -53,25 +54,25 @@ router.post(`/:id/new`, async (req, res) => {
 //deletes all reviews related product id
 router.post('/:id/delete/all', async (req, res) => {
     const batch = writeBatch(db);
-    try{
+    try {
         const product_id = req.params.id
-        const review_query = query(collection(db, collections.REVIEWS), where("product_id", "==", product_id));    
+        const review_query = query(collection(db, collections.REVIEWS), where("product_id", "==", product_id));
         const review_query_snapshot = await getDocs(review_query);
         review_query_snapshot.forEach(async (doc) => {
             batch.delete(doc.ref)
         });
         await batch.commit();
-        const product_query = query(collection(db, "products"), where("product_id", "==", product_id));    
+        const product_query = query(collection(db, "products"), where("product_id", "==", product_id));
         const product_query_snapshot = await getDocs(product_query);
         product_query_snapshot.forEach(async (doc) => {
             await deleteDoc(doc.ref)
         });
-       
-        res.status(202).json({message:"Successfully Deleted"})
-    }catch(e){
-        res.status(405).json({message:e})
-    }   
-  
+
+        res.status(202).json({ message: "Successfully Deleted" })
+    } catch (e) {
+        res.status(405).json({ message: e })
+    }
+
 });
 //Scrap Amazon
 router.post('/getReviews', async (req, res) => {

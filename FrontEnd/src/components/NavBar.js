@@ -50,8 +50,9 @@ function NavBar(props) {
 
   useEffect(() => {
     recognition.addEventListener('result', handleVoiceResult)
-    // let utterance = new SpeechSynthesisUtterance("Hello world!");
-    // speechSynthesis.speak(utterance);
+    let utterance = new SpeechSynthesisUtterance("Hello world!");
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utterance);
     return () => {
       recognition.removeEventListener('result', handleVoiceResult)
     }

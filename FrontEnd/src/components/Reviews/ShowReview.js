@@ -29,7 +29,7 @@ const NewProduct = ({ reviews, scrap_list }) => {
                                     <h2>{scrap.title}</h2>
                                     <h3>{scrap.createdAt}</h3>
                                     <p>
-                                        Description : {scrap.reviewBody}
+                                        Description : {scrap.review_body}
                                     </p>
                                 </div>
                             )
