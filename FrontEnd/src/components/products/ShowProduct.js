@@ -79,36 +79,12 @@ const ShowProduct = () => {
 
 
                                 <div className="product-description-row">
-                                    <div class="column">
-                                        <Box
-                                            sx={{
-                                                marginTop: 8,
-                                                display: 'flex',
-                                                flexDirection: 'column',
-                                                alignItems: 'center',
-                                            }}
-                                        >
-
-                                            <img src={productItem.media_url} alt="alternatetext"></img>
-                                        </Box>
+                                    <img src={productItem.media_url} alt="alternatetext"></img>
+                                    <div class="product-info">
+                                        <h2>{productItem.name}</h2>
+                                        <h3>{"descprtion" in productItem ? productItem.description : productItem.descriptionText[0]}</h3>
+                                        <h2>${productItem.price.toFixed(2)}</h2>
                                     </div>
-                                    <div class="column">
-                                        <Box
-                                            sx={{
-                                                marginTop: 8,
-                                                display: 'flex',
-                                                flexDirection: 'column',
-                                                alignItems: 'center',
-                                            }}
-                                        >
-                                            <h3>title: {productItem.name}</h3>
-
-                                            <h3>Description: {"descprtion" in productItem ? productItem.description : productItem.descriptionText[0]}</h3>
-                                            <h3>Price: ${productItem.price}</h3>
-                                        </Box>
-
-                                    </div>
-
                                 </div>
                                 <div className="product-buttons">
                                     <Button
@@ -128,13 +104,13 @@ const ShowProduct = () => {
                                         Delete
                                     </Button>
                                 </div>
-                                <div >
+                                <div className="product-video" >
                                     {
                                         isMediaLoading ? (
                                             <><h3>isLoading</h3></>
                                         ) :
                                             (
-                                                <video height="711" width="400" autoPlay muted loop>
+                                                <video controls height="711" width="400" autoPlay muted loop>
                                                     <source src={imageUrls[0]} type="video/mp4" />
                                                     Your Browser does not support HTML video.
                                                 </video>

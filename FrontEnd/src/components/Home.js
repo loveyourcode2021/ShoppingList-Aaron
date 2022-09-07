@@ -7,12 +7,12 @@ const Home = () => {
     console.log("Home")
   }, [])
   return (
-    <>
+    <div id="home-page">
       {/* <SayButton
         speak={"test utterance"}>Click</SayButton> */}
-    
+
       <Camera></Camera>
-    </>
+    </div>
   )
 }
 

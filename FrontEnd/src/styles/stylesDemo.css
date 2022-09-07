@@ -1,0 +1,43 @@
+/* Variables */
+
+/* Element Styles */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  margin: 0;
+}
+
+p {
+  font-family: "Times New Roman", Times, serif;
+}
+
+/* Components */
+
+header {
+}
+
+footer {
+}
+
+/* Navbar */
+
+nav {
+  /* nav styles go here */
+}
+
+/* Layout */
+
+/* Home Page Styles */
+
+#home-page h3 {
+  margin: 1rem 0 1rem 0;
+}
+
+/* Products Page Styles */
+
+/* Products Detail Page Styles */

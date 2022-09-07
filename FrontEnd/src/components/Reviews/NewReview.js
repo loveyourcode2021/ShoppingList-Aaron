@@ -85,19 +85,15 @@ const NewProduct = ({ srcLink }) => {
 
     return (
         <>
-            <div className='App'>
+            <div className='reviews'>
 
-                <div>
+                <div className='reviews-sentiment'>
                     {isLoading ? (<h3>Review List is Loadings</h3>) :
                         (
                             <TextSetntient sentimentalWords={!!sentimentalWords ? sentimentalWords : "Hello how are you"}></TextSetntient>
                         )}
                 </div>
-
-                <div>
-
-
-
+                <div className='new-review'>
                     <h2>this is a new Review!</h2>
                     <form id="newProductForm" onSubmit={handleSubmit}>
                         <div>

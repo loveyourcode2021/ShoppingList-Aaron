@@ -21,7 +21,7 @@ const NewProduct = ({ reviews, scrap_list }) => {
                     {
                         scrap_list.map((scrap) => {
                             return (
-                                <div key={scrap.review_id}>
+                                <div className='single-review' key={scrap.review_id}>
                                     <StarsRating
                                         count={scrap.rating}
                                         size={24}
