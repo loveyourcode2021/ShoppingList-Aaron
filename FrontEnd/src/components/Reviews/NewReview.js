@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Reviews } from "../../requests";
 import StarsRating from 'stars-rating'
 import uniqid from 'uniqid';
 import { useNavigate, useParams } from "react-router-dom";
-
+import TextSetntient from '../API/sentiment/Text_Sentiment';
 import ShowReview from "./ShowReview"
+import { async } from '@firebase/util';
 
 const NewProduct = ({ srcLink }) => {
     const [review_list, setReviewsList] = useState([])
@@ -12,8 +13,11 @@ const NewProduct = ({ srcLink }) => {
     const navigate = useNavigate()
     const [isLoading, setLoading] = useState(true)
     const [rating, setRating] = useState(null)
-    const [scraps, setScrap] = useState(null)
+    const [scraps, setScraps] = useState(null)
+    const [sentimentalWords, setSetmentalWords] = useState(null)
     const pid = params.id
+    const inputRef = useRef([]);
+    
     const ratingChanged = (newRating) => {
         setRating(newRating)
     }
@@ -38,55 +42,71 @@ const NewProduct = ({ srcLink }) => {
             console.log(resData.json)
         })
 
-        //here does not work
-        Reviews.index(pid).then(res => {
-            setReviewsList(res)
-            console.log("my new datas are >>", review_list)
-            setLoading(false)
-            console.log(res)
-        }).catch(err => {
-            console.log(err)
-        })
+
     }
-    useEffect(() => {
+    useEffect( () => {
+  
         console.log("amazon>>>", srcLink)
         console.log("newReview Called?")
-        Reviews.index(pid).then(res => {
-            setReviewsList(res)
-            console.log("my new datas are >>", review_list)
-
-
-        }).catch(err => {
-            console.log(err)
-        })
 
         console.log("Amazon Scraping started")
         const productData = {
             "url": srcLink,
             "product_id": pid
         }
-        Reviews.getScrap(productData).then((res) => {
-            setScrap(res)
+        Reviews.getScrap(productData).then(async (res) => {
+            await setScraps(res)
             console.log("amazon", res)
+            if(!!res){
+                await res.map((element, index) => {
+                    inputRef.current[index] = (element.title+element.review_body).trim()
+                })
+                await  setSetmentalWords(inputRef.current.join(""))
+               
+            }
+           
             setLoading(false)
         })
-
+     
+    
+      
     }, [])
 
 
     return (
-        <>
+            <>
             <div className='App'>
+          
                 <div>
+                {isLoading?(<h3>Review List is Loadings</h3>): 
+                (
+                    <TextSetntient sentimentalWords={!!sentimentalWords?sentimentalWords:"Hello how are you"}></TextSetntient>
+                )}
+                </div>
+         
+                <div>
+                    
+                    
+           
                     <h2>this is a new Review!</h2>
                     <form id="newProductForm" onSubmit={handleSubmit}>
+                        <div>
                         <StarsRating
                             count={5}
                             onChange={ratingChanged}
                             size={24}
                             color2={'#ffd700'} />
+                        </div>
+                        
+
                         <div>
-                            <label htmlFor="review_body">Description:</label>
+                        <label htmlFor="title">Title:</label>
+                            <input type="text" name="title" id="title" />
+                        </div>
+                        
+                      
+                        <div>
+                            <label htmlFor="review_body">Review:</label>
                             <input type="text" name="review_body" id="review_body" />
                         </div>
                         <input type="submit" />
@@ -94,13 +114,14 @@ const NewProduct = ({ srcLink }) => {
                 </div>
                 <div>
                     {isLoading ? (<h3>Review List is Loadings</h3>) :
-                        (
-                            <ShowReview reviews={review_list} scrap_list={scraps} />
-                        )}
+                    (
+                            <ShowReview  scrap_list={scraps}/>
+                    )}
                 </div>
             </div>
-        </>
-    );
-}
+            </>
+            
+      
+)}
 
 export default NewProduct

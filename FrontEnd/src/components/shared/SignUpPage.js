@@ -19,9 +19,11 @@ export const SignUpPage = (props) => {
     useEffect(()=>{console.log("SignUpPage")})
     function handleSubmit(event){
         event.preventDefault();
+        const {currentTarget} = event
+        const formData = new FormData(currentTarget)
         const params = {
-            email: email,
-            password: password
+            email: formData.get("email"),
+            password: formData.get("password")
         }
         User.signup(params).then(data => {
             console.log(data)
@@ -73,7 +75,7 @@ export const SignUpPage = (props) => {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign In
+                Sign Up
               </Button>
 
             </Box>
@@ -85,17 +87,3 @@ export const SignUpPage = (props) => {
     )
     
 }
-{/* <h1>Sign Up</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="email">Email</label>
-                    <input type="text" name="email" id="email" onChange={event => {
-                        setEmail(event.currentTarget.value)}} />
-                </div>
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <input type="password" name="password" id="password" onChange={event => {
-                        setPassword(event.currentTarget.value)}} />
-                </div>
-                <input type="submit" value="Sign Up Bro!" />
-            </form> */}

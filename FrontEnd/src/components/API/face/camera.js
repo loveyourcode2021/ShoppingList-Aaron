@@ -30,7 +30,7 @@ const Camera = () => {
     if (displaySize.height === 0) {
       return;
     }
-    console.log("where am i", process.env.PUBLIC_URL)
+ 
     const faces = await faceapi
       .detectAllFaces(
         image,
@@ -109,8 +109,9 @@ const Camera = () => {
 
   return (
     <div className="camera">
+              <h3 className="home__label">Welcome to Friendly Amazon Product Aanlyzer</h3>
       <div className="camera__wrapper">
-        <div>This is HOME Page</div>
+
         <Webcam audio={false} ref={camera} width="100%" height="auto" />
         <canvas
           className=
@@ -126,9 +127,9 @@ const Camera = () => {
               <div className="results__wrapper" key={i}>
                 <div>
                   <p>
-                    Your gerder is {result.gender} and Your face express  is
-                    {result.expressions.asSortedArray()[0].expression} and looks
-                    around {Math.round(result.age)}. Your gender is {result.gender}
+                    Your gerder is {" "}<span className="emphasize_result">{result.gender}</span> and Your face express  is
+                    {" "}<span className="emphasize_result">{result.expressions.asSortedArray()[0].expression}</span> and looks
+                    around <span className="emphasize_result">{Math.round(result.age)}</span>.
                   </p>
                 </div>
               </div>

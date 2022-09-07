@@ -1,10 +1,73 @@
+/* css for ShowProduct.js*/
 .product-container{     
-
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     justify-content: space-between;
+}
+.index-product-mui-talbe-container-1 {
+    width:300px;
+    border-radius: 25px;
+    padding: 10px;
+    width:600px;
+    height: 250px;
+    position: absolute;
+    left: 20%;
+    
+}
+.index-product-mui-talbe-container {
+    border-radius: 15px;
+    background: #1976d2;
+    padding: 20px;
+    width: 250px;
 
 }
 
+.product-table-row{
+ color:white;
+}
+.product-table-cell-list{
+    color:white;
+    pointer-events: none;
+    text-decoration: none;
+    text-decoration: none;
+}
+
+
+.product-table-row:hover:hover {
+    background-color: rgb(255, 204, 76);
+    border-radius: 5px;
+}
+/* ends table design here*/
+
+/* css for detailed product*/
+.css-ag7rrr-MuiTypography-root{
+    text-align: center;
+  
+}
+
+.product-description-row{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height:500px
+}
+/* css for detailed product*/
+.column {
+    float: left;
+    width: 50%;
+    padding: 10px;
+    height: 300px; /* Should be removed. Only for demonstration */
+  }
+  .column > img {
+    float: left;
+    width: 70%;
+    margin-top: 20px;
+    height: 100%; /* Should be removed. Only for demonstration */
+  }
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }

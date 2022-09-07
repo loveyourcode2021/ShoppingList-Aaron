@@ -15,7 +15,7 @@ function NavBar(props) {
   const handleVoiceResult = (event) => {
     const command = event.results[event.results.length - 1][0].transcript;
     console.log(command)
-    if (!listeningRef.current && command.includes("start react")) {
+    if (!listeningRef.current && command.includes("start")) {
       listeningRef.current = true;
     } else if (listeningRef.current) {
       if (command.includes("go to")) {
@@ -50,9 +50,8 @@ function NavBar(props) {
 
   useEffect(() => {
     recognition.addEventListener('result', handleVoiceResult)
-    let utterance = new SpeechSynthesisUtterance("Hello world!");
-    speechSynthesis.speak(utterance);
-
+    // let utterance = new SpeechSynthesisUtterance("Hello world!");
+    // speechSynthesis.speak(utterance);
     return () => {
       recognition.removeEventListener('result', handleVoiceResult)
     }

@@ -15,7 +15,7 @@
   }
   
   .camera__wrapper video {
-    border: 3px solid #fff;
+    border: 5px solid #1976d2;
     border-radius: 3px;
   }
   
@@ -39,18 +39,38 @@
   .webcam-overlay--hidden {
     display: none;
   }
+  .home__label{
+  
+    font-size: 1.4rem;
+    font-weight: 600;
+   
+
+    text-align: center;
+  }
   
   .results__container {
-    background-color: #fff;
+    background-color: #1976d2;
     width: 100%;
     padding-top: 1rem;
-    min-height: 250px;
+    min-height: 150px;
     display: flex;
     justify-content: center;
+    color:white;
+    font-size: 1.4rem;
+    font-weight: 600;
+    font-family:bold;
+    height: 10px;
+
   }
   
   .results__wrapper {
     padding: 1rem 0 0 1rem;
+  }
+  .emphasize_result{
+    color:yellow;
+    font-family:bold;
+    font-size: 1.8rem;
+    font-weight: 700;
   }
   
   @media only screen and (min-width: 768px) {

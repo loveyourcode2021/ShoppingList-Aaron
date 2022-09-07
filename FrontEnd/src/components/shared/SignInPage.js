@@ -8,10 +8,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
+
 import Box from '@mui/material/Box';
 
 import Typography from '@mui/material/Typography';
@@ -28,13 +25,14 @@ export const SignInPage = ({ onSignIn }) => {
 
     useEffect(() => { console.log("SignInPuage") })
     function handleSubmit(event) {
+      const {currentTarget} = event
         event.preventDefault();
-
+        const formData = new FormData(currentTarget)
         const params = {
-            email: email,
-            password: password
+            email: formData.get("email"),
+            password: formData.get("password")
         }
-
+        console.log(params)
         User.signin(params)
             .then(data => {
 

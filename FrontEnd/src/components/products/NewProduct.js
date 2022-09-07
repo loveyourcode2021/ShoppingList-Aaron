@@ -13,6 +13,18 @@ import {
   } from "firebase/storage";
   import { storage } from "../../firebase";
 
+  import Avatar from '@mui/material/Avatar';
+  import Button from '@mui/material/Button';
+  import CssBaseline from '@mui/material/CssBaseline';
+  import TextField from '@mui/material/TextField';
+  
+  import Box from '@mui/material/Box';
+  
+  import Typography from '@mui/material/Typography';
+  import Container from '@mui/material/Container';
+
+  
+
 
 
 
@@ -37,14 +49,6 @@ const NewProduct = () => {
         // do cool stuff here
         const formData = new FormData(currentTarget)
 
-        // const newProductData = {
-        //     "product_id": uniqid.time(),
-        //     name: formData.get('product_name'),
-        //     description: formData.get("product_description"),
-        //     price: formData.get("product_price"),
-        //     media_url: formData.get("product_media_url"),
-        //     src_url: formData.get("product_source_url")
-        // }
 
        const newProductData = {
         "product_id": uniqid.time(),
@@ -89,48 +93,76 @@ const NewProduct = () => {
 
     return (
 
-        <>
-            <div key={uniqid.time()}>
-                <h2>Create a new product!</h2>
-                <form id="newProductForm" onSubmit={handleSubmit}>
-                    
-                        {/* <div>
-                        <label htmlFor="product_name">Product Name:</label>
-                        <input type="text" name="product_name" id="product_name" />
-                        </div>
-                        <div>
-                        <label htmlFor="product_description">Description:</label>
-                        <input type="text" name="product_description" id="product_description"/>
-                        </div>
-                        <div>
-                        <label htmlFor="product_price">Price</label>
-                        <input type="number" name="product_price" id="product_price" steps="0.01"/>
-                        </div>
-                        <div>
-                        <label htmlFor="product_media_url">ImageUrl:</label>
-                        <input type="text" name="product_media_url" id="product_media_url" />
-                        </div> */}
-              
-                       
-                    <div>
-                        <h3>Drag & Drop Files</h3>
-                        <FileUploader
-                            multiple={true}
-                            handleChange={handleChange}
-                            name="file"
-                            types={fileTypes}
-                        />
-                        <p>{file ? `File name: ${file[0].name}` : "no files uploaded yet"}</p>
-                    </div>
-                    <div>
-                        <label htmlFor="product_source_url">SourceUrl:</label>
-                        <input type="text" name="product_source_url" id="product_source_url" />
-                    </div>
-                    <input type="submit" />
-                </form>
-            </div>
-        </>
+    <>
+    <div key={uniqid.time()}>
+        <Container component="main" maxWidth="xs">
+        <CssBaseline />
+            <Box
+            sx={{
+                marginTop: 8,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+            }}
+            >
+
+            <Typography component="h1" variant="h5">
+                Create New Product
+            </Typography>
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <FileUploader
+                                    multiple={true}
+                                    handleChange={handleChange}
+                                    name="file"
+                                    types={fileTypes}
+            />
+            <Typography component="h1" variant="h5">
+            {file ? `File name: ${file[0].name}` : "no files uploaded yet"}
+            </Typography>
+            <TextField
+            margin="normal"
+            fullWidth
+            name="product_source_url"
+            label="product_source_url"
+            type="product_source_url"
+            id="product_source_url"
+            />
+
+            <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            >
+            Create New Product
+            </Button>
+
+            </Box>
+            </Box>
+    </Container>
+    </div>
+    </>
     );
 }
 
 export default NewProduct
+
+{/* <h2>Create a new product!</h2>
+<form id="newProductForm" onSubmit={handleSubmit}>                       
+    <div>
+        <h3>Drag & Drop Files</h3>
+        <FileUploader
+            multiple={true}
+            handleChange={handleChange}
+            name="file"
+            types={fileTypes}
+        />
+        <p>{file ? `File name: ${file[0].name}` : "no files uploaded yet"}</p>
+    </div>
+    <div>
+        <label htmlFor="product_source_url">SourceUrl:</label>
+        <input type="text" name="product_source_url" id="product_source_url" />
+    </div>
+    <input type="submit" />
+</form> */}
+

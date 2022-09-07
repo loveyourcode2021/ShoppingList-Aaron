@@ -43,14 +43,14 @@ router.post('/new', async (req, res) => {
             //.find('li:first').find("span").text().trim()
             const name = $('div[data-feature-name="title"]').find('span[id="productTitle"]').text().trim()
             const descriptionText = [];
-            const description = $('div[data-feature-name="featurebullets"]').find('ul > li').each(async (index, elem) => {
+            $('div[data-feature-name="featurebullets"]').find('ul > li').each(async (index, elem) => {
                 descriptionText.push($(elem).text().trim());
             })
-            $('div[data-feature-name="apex_desktop"]').find('ul[class="a-unordered-list"]').each(async (ele, ind) => {
-                if (ind === 0) {
-                    description = $(ele).find('span').text().trim()
-                }
-            })
+            // $('div[data-feature-name="apex_desktop"]').find('ul[class="a-unordered-list"]').each(async (ele, ind) => {
+            //     if (ind === 0) {
+            //         description = $(ele).find('span').text().trim()
+            //     }
+            // })
             const media_url = $('li[data-csa-c-posy="1"]').find('img').attr('src')
             const price = parseFloat($('div#corePrice_feature_div').find('span.a-offscreen').text().replace(/[^\d.]/g, ''));
 
@@ -124,9 +124,8 @@ router.get('/:id', async (req, res) => {
     querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
         foundData = doc.data()
-
     });
-    !!foundData ? res.send(foundData) : res.status(400).send("not found")
+    !!foundData ? res.send(foundData) : res.status(400).json({ message:"not found"})
 
 
 })

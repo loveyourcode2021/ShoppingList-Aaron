@@ -1,5 +1,5 @@
 import express from 'express';
-import { addDoc, collection, doc, deleteDoc, where, query, getDoc, getDocs, updateDoc, onSnapshot, serverTimestamp, collectionGroup } from 'firebase/firestore';
+import { writeBatch, addDoc, collection, doc, deleteDoc, where, query, getDoc, getDocs, updateDoc, onSnapshot, serverTimestamp, collectionGroup } from 'firebase/firestore';
 import uniqid from 'uniqid';
 import { collections, db, storage } from '../firebase.js';
 import * as cheerio from 'cheerio';
@@ -30,12 +30,13 @@ router.get('/:id/index', async (req, res) => {
 })
 //creates new product
 router.post(`/:id/new`, async (req, res) => {
-    const { product_id, review_id, rating, review_body } = req.body
+    const { product_id, review_id, title, rating, review_body } = req.body
     try {
         const reviewData = {
             review_id: uniqid.time(),
             product_id,
             review_id,
+            title,
             rating,
             review_body,
             "createdAt": new Date()
@@ -49,69 +50,28 @@ router.post(`/:id/new`, async (req, res) => {
 })
 
 
-//hook up specific one item and display
-// router.get('/:id/reviews/:rid', async (req, res) => {
-//     const rid = req.params.rid;
-//     const q = query(collection(db, collections.REVIEWS), where("review_id", "==", rid));
-//     let foundData = ""
-//     const querySnapshot = await getDocs(q);
-//     querySnapshot.forEach((doc) => {
-//         // doc.data() is never undefined for query doc snapshots
-//         foundData = doc.data()
-
-//     });
-//     !!foundData ? res.send(foundData) : res.status(400).send("not found")
-// })
-
-//edit middle ware
-router.patch('/:id/edit', async (req, res) => {
-
-    const data = req.body;
-    // const { product_id, name, price, product_img, description } = req.body;
-    const {
-        product_id,
-        name,
-        description,
-        price,
-        media_url
-    } = req.body
-
-
-    const newProduct = {
-        product_id,
-        name,
-        description,
-        price,
-        media_url,
-        createdAt: new Date()
-    }
-
-    const q = query(collection(db, collections.PRODUCTS), where("product_id", "==", req.params.id))
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach(async (doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        await updateDoc(doc.ref, newProduct).then(data => res.status(200).send(data))
-            .catch(e => {
-                res.status(403).send(e)
-            });
-
-    })
-})
-//creates new product
-router.post('/:id/delete', async (req, res) => {
-
-    const product_id = req.params.id
-    const q = query(collection(db, collections.PRODUCTS), where("product_id", "==", product_id));
-    let foundData = ""
-
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach(async (doc) => {
-        await deleteDoc(doc.ref)
-            .then(data => res.status(200).send(data))
-            .catch(e => {
-                res.status(403).send(e)
-            });
-    });
+//deletes all reviews related product id
+router.post('/:id/delete/all', async (req, res) => {
+    const batch = writeBatch(db);
+    try{
+        const product_id = req.params.id
+        const review_query = query(collection(db, collections.REVIEWS), where("product_id", "==", product_id));    
+        const review_query_snapshot = await getDocs(review_query);
+        review_query_snapshot.forEach(async (doc) => {
+            batch.delete(doc.ref)
+        });
+        await batch.commit();
+        const product_query = query(collection(db, "products"), where("product_id", "==", product_id));    
+        const product_query_snapshot = await getDocs(product_query);
+        product_query_snapshot.forEach(async (doc) => {
+            await deleteDoc(doc.ref)
+        });
+       
+        res.status(202).json({message:"Successfully Deleted"})
+    }catch(e){
+        res.status(405).json({message:e})
+    }   
+  
 });
 //Scrap Amazon
 router.post('/getReviews', async (req, res) => {
@@ -143,16 +103,17 @@ router.post('/getReviews', async (req, res) => {
                 const rating = parseFloat(ratingText.split(' ')[0])
                 const title = $(elem).find('a[data-hook="review-title"]').text().trim()
                 const createdAt = $(elem).find('span[data-hook="review-date"]').text()
-                const reviewBody = $(elem).find('span[data-hook="review-body"]').text().trim()
+                const review_body = $(elem).find('span[data-hook="review-body"]').text().trim()
 
                 const reviewData = {
                     "review_id": uniqid.time(),
-                    rating,
-                    reviewBody,
                     product_id,
+                    title,
+                    rating,
+                    review_body,
                     createdAt,
-                    title
                 }
+
 
                 try {
                     reviewsCreated++;

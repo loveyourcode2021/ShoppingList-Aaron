@@ -70,15 +70,7 @@ export const Products = {
     },
     create_axios(params) {
         return axios.post(`${baseURL}/products/new`, params).then(res => res.json());
-        // axios
-        //     // .post("http://localhost:9900/api/v1/products/new", formData, {
-        //     //   headers: {
-        //     //     "Content-Type": "multipart/form-data",
-        //     //     withCredentials: true
-        //     //   },
-        //     // })
-        //     axios
-        //     .post("http://localhost:9900/api/v1/products/new", formData)
+     
     },
 
     edit(params, id) {
@@ -130,8 +122,8 @@ export const Reviews = {
                 return res.data
             })
     },
-    edit(params, id, rid) {
-        return fetch(`${baseURL}/products/${id}/reviews/${rid}/delete`, {
+    edit(params, id) {
+        return fetch(`${baseURL}/reviews/${id}/edit`, {
             method: 'PATCH',
             credentials: 'include',
             headers: {
@@ -139,13 +131,25 @@ export const Reviews = {
             },
         }).then(res => res.json());
     },
-    delete(id, rid) {
-        return fetch(`${baseURL}/products/${id}/reviews/${rid}/delete`, {
+    delete(id) {
+        return fetch(`${baseURL}/reviews/${id}/delete`, {
             method: 'POST',
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
         }).then(res => res.json());
+    },
+    delete_all(id) {
+        return fetch(`${baseURL}/reviews/${id}/delete/all`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        }).then(res => res.json());
+    },
+    delete_all_axios(id) {
+        return axios.post(`${baseURL}/reviews/${id}/deletall`,{product_id:id}).then(res => res.json());
     },
 }

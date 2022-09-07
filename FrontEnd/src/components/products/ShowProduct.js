@@ -1,10 +1,10 @@
 import React,{useState,useEffect} from "react"
-import { Link, NavLink } from "react-router-dom";
-import { Products } from "../../requests"
+import { useNavigate } from "react-router-dom";
+import { Products, Reviews } from "../../requests"
 import { useParams,  } from "react-router-dom";
 import MainReviews from "../Reviews/MainReviews";
 import uniqid from 'uniqid'
-
+import Box from '@mui/material/Box';
 
 import {
     ref,
@@ -18,6 +18,7 @@ import {
 import "../../styles/product.css"
 const ShowProduct = () => {
     const [productItem,setProductItem] = useState([])
+    const navigate = useNavigate()
     const params = useParams()
     const [isLoading,setLoading] = useState(true)
     const [isMediaLoading,setMediaLoading] = useState(true)
@@ -36,7 +37,9 @@ const ShowProduct = () => {
     }
 
     const handleDelete = (e) =>{
-        Products.destory(params.id).then(res => res.json())
+       // Products.destory(params.id).then(res => res.json())
+       console.log("I got it here")
+        Reviews.delete_all(params.id).then(res=> console.log("review deleted=>" ,res.json()))
     }
 
 
@@ -70,19 +73,46 @@ const ShowProduct = () => {
                 <h3>Fetching single product at the moment </h3>
             </>):(
                 <>
-                <div  className="product-container">
-                    <div>
-                    <h3>title: {productItem.name}</h3>
-                    <h3>Description: {productItem.description}</h3>
-                    <h3>Price: ${productItem.price}</h3>
-                    <a href={editUrl}className="menu-item" onClick={handleRoute}>Edit</a>
-                    <a href="/" className="menu-item" onClick={e => handleDelete(e)}>Delete</a>
+           
+ 
+
+                    <div className="product-description-row">
+                    <div class="column">
+                    <Box
+                        sx={{
+                        marginTop: 8,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        }}
+                    >
+                        
+                    <img src={productItem.media_url} alt="alternatetext"></img>
+                    </Box>
                     </div>
-                    <div>
+                    <div class="column">
+                    <Box
+                        sx={{
+                        marginTop: 8,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        }}
+                    >
+                    <h3>title: {productItem.name}</h3>
+                  
+                    <h3>Description: {"descprtion"in productItem? productItem.description : productItem.descriptionText[0]}</h3>
+                    <h3>Price: ${productItem.price}</h3>
+                    </Box>
                 
+                    </div>
 
                     </div>
                     <div>
+                    <a href={editUrl}className="menu-item" onClick={handleRoute}>Edit</a>
+                    <a href="/products/index" className="menu-item" onClick={e => handleDelete(e)}>Delete</a>
+                    </div>
+                    <div >
                     {
                         isMediaLoading? (<><h3>isLoading</h3></>):
                         (
@@ -97,14 +127,17 @@ const ShowProduct = () => {
                     </div>
                  
                     
-                </div>
-    
-                <MainReviews srcUrl={productItem.src_url}/></>
+            
+                
+                <MainReviews srcUrl={productItem.src_url}/>
+                </>
+               
             )}
          
 
-        </div>
-        </div>
+            </div>
+            </div>
+        
         </>
     )
 }
