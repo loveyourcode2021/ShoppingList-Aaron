@@ -5,19 +5,15 @@ import StarsRating from 'stars-rating'
 
 const NewProduct = ({ reviews, scrap_list }) => {
     var params = useParams();
-
-
     useEffect(() => {
         console.log("show rewviews >>", reviews)
-
     }, [])
+    
     return (
         <div>
-            <h3>This Section is to show Reviews</h3>
-
             <>
                 <div>
-                    <h3>--Amazon Review--</h3>
+                    <h2> Reviews </h2>
                     {
                         scrap_list.map((scrap) => {
                             return (

@@ -11,11 +11,11 @@ const DetailedProduct = ({product}) => {
         <TableRow key={uniqid(product.product_id)} className="product-table-row"> 
             <TableCell style={{ width: 300   }} >
             <NavLink style={{ textDecoration: 'none', color: 'white', size:"15px", style:"bold" }} to={`/products/${product.product_id}`}>
-           {product.name.substring(0,30)}
+            {product.name.substring(0,15)}
             </NavLink>
             </TableCell>
             <TableCell style={{ width: 100, color: 'white' }}>
-             ${product.price.toString()}
+             ${product.price}
             </TableCell>
             <TableCell style={{ width: 200 ,color: 'white'}} >
             {new Date(product.createdAt.seconds*1000).toLocaleString()}

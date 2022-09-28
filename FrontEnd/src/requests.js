@@ -1,5 +1,6 @@
 import axios from "axios";
-const baseURL = "http://localhost:9900/api/v1"
+const baseURL = "https://amazon-product-analyzer-server.vercel.app/api/v1"
+// const baseURL = "http://localhost:9900/api/v1"
 export const User = {
     current() {
         return fetch(`${baseURL}/users/current`, {
@@ -70,7 +71,7 @@ export const Products = {
     },
     create_axios(params) {
         return axios.post(`${baseURL}/products/new`, params).then(res => res.json());
-     
+
     },
 
     edit(params, id) {
@@ -116,7 +117,7 @@ export const Reviews = {
             body: JSON.stringify(params)
         }).then(res => res.json());
     },
-    getScrap(userData) {
+    test(userData) {
         return axios.post(`${baseURL}/reviews/getReviews`, userData)
             .then(res => {
                 return res.data
@@ -150,6 +151,6 @@ export const Reviews = {
         }).then(res => res.json());
     },
     delete_all_axios(id) {
-        return axios.post(`${baseURL}/reviews/${id}/deletall`,{product_id:id}).then(res => res.json());
+        return axios.post(`${baseURL}/reviews/${id}/deletall`, { product_id: id }).then(res => res.json());
     },
 }

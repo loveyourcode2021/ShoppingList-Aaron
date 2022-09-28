@@ -3,15 +3,16 @@ import { NavLink } from 'react-router-dom';
 import '../styles/NavBar.css'
 import { recognition } from "../components/API/voice/voiceconginition.js";
 import { useNavigate } from "react-router-dom";
+import {User} from "../requests"
 
 
-function NavBar(props) {
-  const { currentUser, onSignOut } = props
-  const [stopReco, setStopReco] = useState(false);
+function NavBar({ currentUser, handleSignOut }) {
   const listeningRef = useRef(false);
   const navigate = useNavigate();
   recognition.continuous = true;
-
+  // useEffect(()=>{
+  //   console.log("Current User===>>>>>>",currentUser())
+  // },[])
   const handleVoiceResult = (event) => {
     const command = event.results[event.results.length - 1][0].transcript;
     console.log(command)
@@ -20,7 +21,7 @@ function NavBar(props) {
     } else if (listeningRef.current) {
       if (command.includes("go to")) {
         if (command.includes("home")) {
-          navigate("/")
+          navigate("/amazonanalyzer")
         } else if (
           command.includes("new product")
         ) {
@@ -47,12 +48,17 @@ function NavBar(props) {
     }
     console.log(listeningRef.current)
   }
+  const onSignOut = () => {   
+    handleSignOut();
+    navigate("/amazonanalyzer")
+   }
 
   useEffect(() => {
     recognition.addEventListener('result', handleVoiceResult)
     let utterance = new SpeechSynthesisUtterance("Hello world!");
     speechSynthesis.cancel();
     speechSynthesis.speak(utterance);
+    console.log("navbar current User is",currentUser)
     return () => {
       recognition.removeEventListener('result', handleVoiceResult)
     }
@@ -74,11 +80,11 @@ function NavBar(props) {
           <li><NavLink className='nav__item' to='/products/new'> NewProduct</NavLink></li>
         </ul>
         <ul className='navbar__sign'>
-          {!!currentUser ?
+          {currentUser ?
             (<>
-              <span className='welcome'> Welcome User: {currentUser}</span>
+              <span className='welcome'> Welcome: {currentUser}</span>
               <li>
-                <a href="/signout" onClick={onSignOut} className="nav__item">Sign Out</a>
+                <a href="/amazonanalyzer" onClick={() => onSignOut()} className="nav__item">Sign Out</a>
               </li>
             </>
             ) :

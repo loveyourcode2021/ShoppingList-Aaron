@@ -17,6 +17,14 @@ import { storage } from "../../firebase";
 
 import "../../styles/product.css"
 import { Button } from "@mui/material";
+import Avatar from '@mui/material/Avatar';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+
+
 const ShowProduct = () => {
     const [productItem, setProductItem] = useState([])
     const navigate = useNavigate()
@@ -37,15 +45,20 @@ const ShowProduct = () => {
         setEditOrDelete(false)
     }
 
-    const handleDelete = (e) => {
-        // Products.destory(params.id).then(res => res.json())
+    const handleDelete = async (e) => {
         console.log("I got it here")
-        Reviews.delete_all(params.id).then(res => console.log("review deleted=>", res.json()))
-        navigate("/products/index")
+        Reviews.delete_all(params.id)
+            .then(res => {
+                console.log("deleted")
+                navigate("/products/index")
+            })
     }
 
 
+
     useEffect(() => {
+        setLoading(true)
+        setMediaLoading(true)
         Products.show(params.id).then(data => {
             console.log("ProductList ")
             console.log(data)
@@ -75,15 +88,12 @@ const ShowProduct = () => {
                                 <h3>Fetching single product at the moment </h3>
                             </>) : (
                             <>
-
-
-
                                 <div className="product-description-row">
                                     <img src={productItem.media_url} alt="alternatetext"></img>
                                     <div class="product-info">
                                         <h2>{productItem.name}</h2>
                                         <h3>{"descprtion" in productItem ? productItem.description : productItem.descriptionText[0]}</h3>
-                                        <h2>${productItem.price.toFixed(2)}</h2>
+                                        <h2>${productItem.price}</h2>
                                     </div>
                                 </div>
                                 <div className="product-buttons">
@@ -107,7 +117,7 @@ const ShowProduct = () => {
                                 <div className="product-video" >
                                     {
                                         isMediaLoading ? (
-                                            <><h3>isLoading</h3></>
+                                            <><h3>Video is not avaiable at the moment</h3></>
                                         ) :
                                             (
                                                 <video controls height="711" width="400" autoPlay muted loop>

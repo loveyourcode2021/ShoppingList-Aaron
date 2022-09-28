@@ -4,21 +4,17 @@ import { User } from "../../requests"
 import { useNavigate } from "react-router-dom";
 
 //sign in design free template from some mui
-import Avatar from '@mui/material/Avatar';
+
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-
 import Box from '@mui/material/Box';
-
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles'
+
 
 export const SignInPage = ({ onSignIn }) => {
-    const theme = createTheme();
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+
     let navigate = useNavigate();
 
 
@@ -34,10 +30,12 @@ export const SignInPage = ({ onSignIn }) => {
         }
         console.log(params)
         User.signin(params)
-            .then(data => {
-
+            .then(data => 
+            {
+                console.log("got data")
                 if (data?.user) {
-                    onSignIn(params)
+                    console.log("singin==",data)
+                    onSignIn(data)
                     navigate("/")
                 }
             })
@@ -96,25 +94,3 @@ export const SignInPage = ({ onSignIn }) => {
     );
 }
 
-{/* <div class="container">
-                <div class="card">
-                <h1 class="card_title">Login to your account</h1>
-               
-                </div>
-        
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <label htmlFor="email">Email</label>
-                        <input type="text" name="email" id="email" onChange={event => {
-                            setEmail(event.currentTarget.value)
-                        }} />
-                    </div>
-                    <div>
-                        <label htmlFor="password">Password</label>
-                        <input type="password" name="password" id="password" onChange={event => {
-                            setPassword(event.currentTarget.value)
-                        }} />
-                    </div>
-                    <input type="submit" value="Sign In" />
-                </form>
-            </div> */}

@@ -28,7 +28,7 @@ export const SignUpPage = (props) => {
         User.signup(params).then(data => {
             console.log(data)
             onSignUp(data)
-            navigate("/")
+            navigate("/amazonanalyzer")
         })
     }
     return(

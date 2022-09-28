@@ -8,16 +8,23 @@ import ShowReview from "./ShowReview"
 import { async } from '@firebase/util';
 import { generateReviewDateString } from '../../utilities/utils';
 
+
+/**mui library */
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+
+
+
 const NewProduct = ({ srcLink }) => {
-    const [review_list, setReviewsList] = useState([])
     const params = useParams();
-    const navigate = useNavigate()
+
     const [isLoading, setLoading] = useState(true)
     const [rating, setRating] = useState(null)
     const [scraps, setScraps] = useState(null)
     const [sentimentalWords, setSetmentalWords] = useState(null)
     const pid = params.id
-    const inputRef = useRef([]);
 
     const ratingChanged = (newRating) => {
         setRating(newRating)
@@ -28,12 +35,8 @@ const NewProduct = ({ srcLink }) => {
         event.preventDefault();
         // do cool stuff here
         const formData = new FormData(currentTarget)
-        setReviewsList([])
-
         const currentDate = new Date()
         const createdAt = generateReviewDateString(currentDate)
-
-
         const newReviewData = {
             "review_id": uniqid.time(),
             "product_id": params.id,
@@ -55,31 +58,23 @@ const NewProduct = ({ srcLink }) => {
 
     }
     useEffect(() => {
-
         console.log("amazon>>>", srcLink)
         console.log("newReview Called?")
-
         console.log("Amazon Scraping started")
         const productData = {
             "url": srcLink,
             "product_id": pid
         }
-        Reviews.getScrap(productData).then(async (res) => {
-            await setScraps(res)
+        Reviews.test(productData).then((res) => {
+            setScraps(res)
             console.log("amazon", res)
-            if (!!res) {
-                await res.map((element, index) => {
-                    inputRef.current[index] = (element.title + element.review_body).trim()
-                })
-                await setSetmentalWords(inputRef.current.join(""))
-
-            }
-
+            const sentimentWords = []
+            res.forEach((element) => {
+                sentimentWords.push((element.title + element.review_body).trim())
+            })
+            setSetmentalWords(sentimentWords.join(""))
             setLoading(false)
         })
-
-
-
     }, [])
 
 
@@ -88,35 +83,50 @@ const NewProduct = ({ srcLink }) => {
             <div className='reviews'>
 
                 <div className='reviews-sentiment'>
-                    {isLoading ? (<h3>Review List is Loadings</h3>) :
-                        (
-                            <TextSetntient sentimentalWords={!!sentimentalWords ? sentimentalWords : "Hello how are you"}></TextSetntient>
-                        )}
+                    {isLoading && <h3>Review List is Loadings</h3>}
+                    {!isLoading && sentimentalWords && (
+                        <TextSetntient sentimentalWords={sentimentalWords}></TextSetntient>
+                    )}
                 </div>
                 <div className='new-review'>
                     <h2>this is a new Review!</h2>
-                    <form id="newProductForm" onSubmit={handleSubmit}>
-                        <div>
-                            <StarsRating
-                                count={5}
-                                onChange={ratingChanged}
-                                size={24}
-                                color2={'#ffd700'} />
-                        </div>
+                    <Box id="newProductForm" component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
 
+                        <StarsRating
+                            count={5}
+                            onChange={ratingChanged}
+                            size={24}
+                            color2={'#ffd700'} />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="title"
+                            label="Tile"
+                            name="title"
+                            autoFocus
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="review_body"
+                            label="review_body"
+                            type="review_body"
+                            id="review_body"
+                        />
 
-                        <div>
-                            <label htmlFor="title">Title:</label>
-                            <input type="text" name="title" id="title" />
-                        </div>
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2 }}
+                        >
+                            Submit Review
+                        </Button>
 
+                    </Box>
 
-                        <div>
-                            <label htmlFor="review_body">Review:</label>
-                            <textarea rows={4} cols={50} name="review_body" id="review_body" />
-                        </div>
-                        <input type="submit" />
-                    </form>
                 </div>
                 <div>
                     {isLoading ? (<h3>Review List is Loadings</h3>) :

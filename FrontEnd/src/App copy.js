@@ -29,11 +29,12 @@ function App() {
 
   useEffect(() => {
     getCurrentUser()
-  }, [])
-  const getCurrentUser = () => {
+  }, [currentUser])
+  const getCurrentUser = (email) => {
     return User.current().then(user => {
       console.log("---App.js---start USEREFFECT")
-      console.log(user.data)
+      console.log(user.data.email)
+      console.log("fake param===",email)
       !!user.data ? setCurrentUser(user.data.email) : setCurrentUser(undefined)
       console.log("---App.js---END USEREFFECT")
     }).catch(e =>

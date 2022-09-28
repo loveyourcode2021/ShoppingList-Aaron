@@ -91,20 +91,32 @@ const Camera = () => {
   };
 
   useEffect(() => {
-    loadModels()
-    if (camera !== null) {
-      const ticking = setInterval(async () => {
-        await getFaces();
-      }, 80);
-      return () => {
-        clearOverlay(cameraCanvas);
-        clearInterval(ticking);
-      };
-    } else { // camera equals null
-      return clearOverlay(cameraCanvas);
-    }
+    loadModels().then(loaded => {
+      if (camera !== null) {
+        const ticking = setInterval(async () => {
+          await getFaces();
+        }, 80);
+        return () => {
+          clearOverlay(cameraCanvas);
+          clearInterval(ticking);
+        };
+      } else { // camera equals null
+        return clearOverlay(cameraCanvas);
+      }
+    })
   }, []);
 
+  // let status = "";
+
+  // if (!camera.current?.video) {
+  //   status = "Connecting to camera..."
+  // }
+  // if (camera.current?.video) {
+  //   status = "Generating facial recognition profile..."
+  // }
+  // if (results.length > 0) {
+  //   status = "Results:"
+  // }
 
 
   return (
@@ -122,8 +134,8 @@ const Camera = () => {
       <>
         <div className="results__container">
           <div>
-            <p>I think...</p>
-            {results.map((result, i) => (
+            {/* <p>{status}</p> */}
+            {results.length > 0 && results.map((result, i) => (
               <div className="results__wrapper" key={i}>
                 <div>
                   <p>
