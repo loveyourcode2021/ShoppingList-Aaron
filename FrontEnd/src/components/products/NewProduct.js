@@ -28,7 +28,7 @@ import Container from '@mui/material/Container';
 
 
 
-const NewProduct = ({currentUser}) => {
+const NewProduct = () => {
     const navigate = useNavigate()
 
     const fileTypes = ["JPEG", "JPG", "PNG", "GIF", "MOV", "AVI", "MP4"];
@@ -42,9 +42,7 @@ const NewProduct = ({currentUser}) => {
         console.log("file loaded", file[0].name)
     };
     useEffect(()=>{
-        if (!currentUser){
-            navigate('/signin')
-        } 
+   
     },[])
 
     const handleSubmit = (event) => {

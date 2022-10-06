@@ -4,11 +4,12 @@ import '../styles/NavBar.css'
 import { recognition } from "../components/API/voice/voiceconginition.js";
 import { useNavigate } from "react-router-dom";
 import {User} from "../requests"
+import {getCurrentUser, delete_cookie,  } from '../utilities/utils'
 
-
-function NavBar({ currentUser, handleSignOut }) {
+function NavBar() {
   const listeningRef = useRef(false);
   const navigate = useNavigate();
+  const currentUser = getCurrentUser();
   recognition.continuous = true;
   // useEffect(()=>{
   //   console.log("Current User===>>>>>>",currentUser())
@@ -49,7 +50,7 @@ function NavBar({ currentUser, handleSignOut }) {
     console.log(listeningRef.current)
   }
   const onSignOut = () => {   
-    handleSignOut();
+    delete_cookie();
     navigate("/amazonanalyzer")
    }
 

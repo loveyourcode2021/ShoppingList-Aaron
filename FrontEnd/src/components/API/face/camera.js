@@ -92,6 +92,7 @@ const Camera = () => {
 
   useEffect(() => {
     loadModels().then(loaded => {
+
       if (camera !== null) {
         const ticking = setInterval(async () => {
           await getFaces();
@@ -103,6 +104,7 @@ const Camera = () => {
       } else { // camera equals null
         return clearOverlay(cameraCanvas);
       }
+   
     })
   }, []);
 

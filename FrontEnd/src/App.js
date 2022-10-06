@@ -8,7 +8,7 @@ import Home from './components/Home';
 //login pages
 import { SignInPage } from './components/shared/SignInPage';
 import { SignUpPage } from './components/shared/SignUpPage';
-
+import {ProtectedAuth} from './components/shared/ProtectedAuth'
 //ProductPage
 import MainProducts from './components/products/Products';
 import NewProduct from './components/products/NewProduct';
@@ -19,41 +19,9 @@ import DeleteProduct from './components/products/DeleteProduct';
 import SingleProduct from './components/products/SingleProduct';
 import { useScrollTrigger } from '@mui/material';
 
+import {getCookieValue, delete_cookie, setCurrentUser,getCurrentUser } from './utilities/utils'
 
 function App() {
-
-  const [user, setUser] = useState(undefined)
-
-  const getCookieValue = (name) => {
-    return document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
-  }
-
-  function delete_cookie(name) {
-    document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-  }
-
-  const setCurrentUser = (data) => {
-    const endOfDay = new Date().setHours(23, 59, 59, 999)
-    const expiry = new Date(endOfDay).toUTCString();
-    document.cookie = `email=${data.user.email}; expires=${expiry}; path=/;`
-    setUser(getCookieValue('email'));
-  }
-
-  const getCurrentUser = () => {
-    const userCookie = getCookieValue('email')
-    console.log(userCookie)
-    if (userCookie) {
-      setUser(userCookie)
-    } else {
-      setUser(undefined)
-    }
-  }
-
-  const handleSignOut = () => {
-    const instantExpiry = new Date().toUTCString();
-    delete_cookie("email")
-    setUser(undefined);
-  }
 
   useEffect(() => {
     getCurrentUser()
@@ -61,17 +29,16 @@ function App() {
 
   return (
     <BrowserRouter basename='/amazonanalyzer'>
-      <NavBar handleSignOut={handleSignOut} currentUser={user} />
+      <NavBar />
       <Routes>
         <Route index element={<Home />} />
         <Route path="signin" element={<SignInPage onSignIn={setCurrentUser} />} />
         <Route path="signup" element={<SignUpPage onSignUp={setCurrentUser} />} />
-        <Route path="products" element={<MainProducts currentUser={getCurrentUser} />}>
-          <Route path="index" element={<IndexProduct />} />
-          <Route path="new" element={<NewProduct />} />
+        <Route path="products" element={<MainProducts/>}>
+          <Route path="index" element={<ProtectedAuth><IndexProduct /></ProtectedAuth>} />
+          <Route path="new" element={<ProtectedAuth><NewProduct /></ProtectedAuth>}/>
           <Route path=":id" element={< SingleProduct />} >
-            <Route index element={<ShowProduct />} >
-            </Route>
+            <Route index element={<ShowProduct />} />
             <Route path="edit" element={<EditProduct />} />
             <Route path="delete" element={<DeleteProduct />} />
           </Route>
